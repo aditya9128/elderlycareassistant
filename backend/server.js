@@ -112,7 +112,7 @@ app.use(helmet({
 // CORS configuration
 const allowedOrigins = process.env.CORS_ORIGIN 
     ? process.env.CORS_ORIGIN.split(',') 
-    : ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://localhost:5000', 'http://127.0.0.1:5000', 'http://localhost:5500', 'http://127.0.0.1:5500'];
+    : ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://localhost:5000', 'http://127.0.0.1:5000', 'http://localhost:5500', 'http://127.0.0.1:5500', 'https://elderlycare-backend-f853.onrender.com'];
 
 // CORS configuration - Development (allow all)
 if (process.env.NODE_ENV !== 'production') {
@@ -127,7 +127,7 @@ if (process.env.NODE_ENV !== 'production') {
     // Production CORS configuration
     const allowedOrigins = process.env.CORS_ORIGIN 
         ? process.env.CORS_ORIGIN.split(',') 
-        : ['https://yourdomain.com'];
+        : ['https://elderlycare-backend-f853.onrender.com'];
     
     app.use(cors({
         origin: function (origin, callback) {
