@@ -3,7 +3,7 @@ const logger = require('../utils/logger');
 
 const connectDB = async () => {
   try {
-    const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/elderlycare';
+    const mongoURI = process.env.MONGODB_URI;
     
     const conn = await mongoose.connect(mongoURI, {
       useNewUrlParser: true,
