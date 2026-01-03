@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Login | ElderlyCare Assistant</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Custom Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        secondary: {
+                            50: '#fdf2f8',
+                            100: '#fce7f3',
+                            500: '#ec4899',
+                            600: '#db2777',
+                        },
+                        accent: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                        }
+                    },
+                    fontFamily: {
+                        'poppins': ['Poppins', 'sans-serif'],
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.3s ease-out',
+                        'float': 'float 3s ease-in-out infinite',
+                        'pulse-glow': 'pulseGlow 2s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { boxShadow: '0 0 20px rgba(14, 165, 233, 0.3)' },
+                            '50%': { boxShadow: '0 0 30px rgba(14, 165, 233, 0.6)' },
+                        }
+                    },
+                    backgroundImage: {
+                        'auth-gradient': 'linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom Styles -->
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(14, 165, 233, 0.5);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(14, 165, 233, 0.8);
+        }
+        
+        /* Glass morphism effect */
+        .glass-morphism {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Input focus effects */
+        .input-focus:focus {
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
+            border-color: #0ea5e9;
+        }
+        
+        /* Loading spinner */
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 3px solid #ffffff;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-auth-gradient min-h-screen flex items-center justify-center p-4">
+    
+    <!-- Background decorative elements -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute top-1/4 left-1/4 w-64 h-64 bg-primary-500/10 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary-500/10 rounded-full blur-3xl"></div>
+        <div class="absolute top-3/4 left-1/2 w-48 h-48 bg-accent-500/10 rounded-full blur-3xl"></div>
+    </div>
+
+    <!-- Main Login Container -->
+    <div class="relative w-full max-w-4xl mx-auto animate-fade-in">
+        <!-- Back to Home Button -->
+        <a href="index.html" 
+           class="absolute top-0 left-0 md:left-4 flex items-center space-x-2 text-white/80 hover:text-white transition-all duration-300 group z-50">
+            <i class="fas fa-arrow-left group-hover:-translate-x-1 transition-transform"></i>
+            <span class="font-medium">Back to Home</span>
+        </a>
+        
+        <!-- Caregiver Login Link -->
+        <a href="caregiver-login.html" 
+           class="absolute top-0 right-0 md:right-4 flex items-center space-x-2 text-white/80 hover:text-white transition-all duration-300 group z-50">
+            <span class="font-medium">Caregiver Login</span>
+            <i class="fas fa-user-nurse group-hover:translate-x-1 transition-transform"></i>
+        </a>
+        
+        <div class="flex flex-col lg:flex-row rounded-2xl overflow-hidden shadow-2xl">
+            
+            <!-- Left Side - Welcome & Info -->
+            <div class="lg:w-1/2 bg-gradient-to-br from-primary-700 to-primary-900 p-8 md:p-12">
+                <div class="h-full flex flex-col justify-between">
+                    <div>
+                        <!-- Logo -->
+                        <div class="flex items-center space-x-3 mb-8">
+                            <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                                <i class="fas fa-heartbeat text-white text-2xl"></i>
+                            </div>
+                            <h1 class="text-2xl font-bold text-white">ElderlyCare<span class="text-accent-400">Assistant</span></h1>
+                        </div>
+                        
+                        <!-- Welcome Message -->
+                        <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">
+                            Welcome Back to <br>Compassionate Care
+                        </h2>
+                        <p class="text-white/80 text-lg mb-8">
+                            Access your personalized dashboard to manage care services, medical reminders, and connect with caregivers.
+                        </p>
+                        
+                        <!-- Features List -->
+                        <div class="space-y-4 mb-8">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                                    <i class="fas fa-check text-white text-sm"></i>
+                                </div>
+                                <span class="text-white/90">Manage medical reminders</span>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                                    <i class="fas fa-check text-white text-sm"></i>
+                                </div>
+                                <span class="text-white/90">Book caregiver appointments</span>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                                    <i class="fas fa-check text-white text-sm"></i>
+                                </div>
+                                <span class="text-white/90">Track health records</span>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                                    <i class="fas fa-check text-white text-sm"></i>
+                                </div>
+                                <span class="text-white/90">Connect with verified caregivers</span>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                                    <i class="fas fa-check text-white text-sm"></i>
+                                </div>
+                                <span class="text-white/90">Monitor health metrics</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Need Help Section -->
+                    <div class="bg-white/10 rounded-xl p-4 backdrop-blur-sm">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-accent-500 rounded-full flex items-center justify-center animate-pulse-glow">
+                                <i class="fas fa-headset text-white"></i>
+                            </div>
+                            <div>
+                                <p class="text-white font-medium">Need help logging in?</p>
+                                <p class="text-white/80 text-sm">Contact support: <span class="font-semibold">1800-1000-1200</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Side - Login Form -->
+            <div class="lg:w-1/2 glass-morphism p-8 md:p-12">
+                <!-- Login Header -->
+                <div class="mb-8 text-center">
+                    <h3 class="text-2xl font-bold text-white mb-2">User Login</h3>
+                    <p class="text-white/70">Enter your credentials to access your account</p>
+                </div>
+                
+                <!-- User Login Form -->
+                <form id="userLoginForm" class="space-y-6">
+                    <!-- Email -->
+                    <div>
+                        <label class="block text-white/90 mb-2 font-medium">
+                            <i class="fas fa-envelope mr-2"></i>Email Address
+                        </label>
+                        <input type="email" 
+                               id="userEmail"
+                               placeholder="Enter your registered email"
+                               required
+                               class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 input-focus outline-none transition-all duration-300">
+                        <p id="userEmailError" class="text-red-300 text-sm mt-2 h-5"></p>
+                    </div>
+                    
+                    <!-- Password -->
+                    <div>
+                        <label class="block text-white/90 mb-2 font-medium">
+                            <i class="fas fa-lock mr-2"></i>Password
+                        </label>
+                        <div class="relative">
+                            <input type="password" 
+                                   id="userPassword"
+                                   placeholder="Enter your password"
+                                   required
+                                   class="w-full px-4 py-3 pl-12 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 input-focus outline-none transition-all duration-300 pr-12">
+                            <div class="absolute left-4 top-1/2 transform -translate-y-1/2">
+                                <i class="fas fa-lock text-white/60"></i>
+                            </div>
+                            <button type="button" 
+                                    class="absolute right-4 top-1/2 transform -translate-y-1/2 text-white/60 hover:text-white transition-colors password-toggle"
+                                    data-target="userPassword">
+                                <i class="fas fa-eye" id="userPasswordEyeIcon"></i>
+                            </button>
+                        </div>
+                        <p id="userPasswordError" class="text-red-300 text-sm mt-2 h-5"></p>
+                    </div>
+                    
+                    <!-- Remember Me & Forgot Password -->
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <input type="checkbox" id="rememberMe" class="mr-2">
+                            <label for="rememberMe" class="text-white/80 text-sm">Remember me</label>
+                        </div>
+                        <a href="forgot-password.html" class="text-primary-300 hover:text-primary-400 text-sm">
+                            Forgot Password?
+                        </a>
+                    </div>
+                    
+                    <!-- Submit Button -->
+                    <button type="submit" 
+                            id="userLoginBtn"
+                            class="w-full py-3.5 bg-primary-600 hover:bg-primary-700 text-white font-bold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 flex items-center justify-center space-x-3">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <span>Login to Account</span>
+                    </button>
+                    
+                    <!-- Don't have account -->
+                    <div class="text-center pt-4 border-t border-white/20">
+                        <p class="text-white/80">
+                            Don't have an account? 
+                            <a href="signup.html" class="text-accent-300 hover:text-accent-400 font-semibold">
+                                Sign up here
+                            </a>
+                        </p>
+                    </div>
+                </form>
+                
+                <!-- Loading Overlay -->
+                <div id="loginLoading" class="absolute inset-0 bg-black/70 flex items-center justify-center rounded-2xl z-10 hidden">
+                    <div class="text-center">
+                        <div class="spinner w-12 h-12 mb-4 mx-auto"></div>
+                        <p class="text-white text-lg font-medium">Logging in...</p>
+                        <p class="text-white/70 text-sm">Please wait a moment</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Security Badge -->
+        <div class="mt-6 text-center">
+            <div class="inline-flex items-center space-x-2 text-white/60 text-sm">
+                <i class="fas fa-shield-alt text-green-400"></i>
+                <span>Your information is secured with 256-bit SSL encryption</span>
+                <i class="fas fa-lock text-green-400"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- External JavaScript -->
+    <script src="./src/js/login.js"></script>
+</body>
+</html>

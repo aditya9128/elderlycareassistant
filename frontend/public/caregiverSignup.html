@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caregiver Sign Up | ElderlyCare Assistant</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Custom Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        secondary: {
+                            50: '#fdf2f8',
+                            100: '#fce7f3',
+                            500: '#ec4899',
+                            600: '#db2777',
+                        },
+                        accent: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                        },
+                        teal: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                        }
+                    },
+                    fontFamily: {
+                        'poppins': ['Poppins', 'sans-serif'],
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.3s ease-out',
+                        'pulse-glow': 'pulseGlow 2s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { boxShadow: '0 0 20px rgba(20, 184, 166, 0.3)' },
+                            '50%': { boxShadow: '0 0 30px rgba(20, 184, 166, 0.6)' },
+                        }
+                    },
+                    backgroundImage: {
+                        'auth-gradient': 'linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom Styles -->
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(20, 184, 166, 0.5);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(20, 184, 166, 0.8);
+        }
+        
+        /* Glass morphism effect */
+        .glass-morphism {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Input focus effects */
+        .input-focus:focus {
+            box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.2);
+            border-color: #14b8a6;
+        }
+        
+        /* Loading spinner */
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 3px solid #ffffff;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Step indicator */
+        .step-indicator {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .step-complete {
+            background-color: #10b981;
+            color: white;
+        }
+        
+        .step-active {
+            background-color: #14b8a6;
+            color: white;
+            transform: scale(1.1);
+        }
+        
+        .step-inactive {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        /* Form step transition */
+        .form-step {
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        
+        .form-step-hidden {
+            opacity: 0;
+            transform: translateX(20px);
+            display: none;
+        }
+        
+        /* Skills and languages tags */
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            margin: 0.25rem;
+            transition: all 0.2s;
+        }
+        
+        .tag:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+        
+        .tag-remove {
+            margin-left: 0.5rem;
+            cursor: pointer;
+            opacity: 0.7;
+        }
+        
+        .tag-remove:hover {
+            opacity: 1;
+        }
+        
+        /* Custom checkbox */
+        .custom-checkbox {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .custom-checkbox.checked {
+            background-color: #14b8a6;
+            border-color: #14b8a6;
+        }
+        
+        /* Specialization badges */
+        .specialization-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+        
+        .specialization-badge.selected {
+            background: rgba(20, 184, 166, 0.2);
+            border-color: #14b8a6;
+            color: white;
+        }
+        
+        .specialization-badge.unselected {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .specialization-badge.unselected:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-auth-gradient min-h-screen flex items-center justify-center p-4">
+    
+    <!-- Background decorative elements -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute top-1/4 left-1/4 w-64 h-64 bg-teal-500/10 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-primary-500/10 rounded-full blur-3xl"></div>
+        <div class="absolute top-3/4 left-1/2 w-48 h-48 bg-secondary-500/10 rounded-full blur-3xl"></div>
+    </div>
+
+    <!-- Main Signup Container -->
+    <div class="relative w-full max-w-5xl mx-auto animate-fade-in">
+        <!-- Back to Home Button -->
+        <a href="index.html" 
+           class="absolute top-0 left-0 md:left-4 flex items-center space-x-2 text-white/80 hover:text-white transition-all duration-300 group z-50">
+            <i class="fas fa-arrow-left group-hover:-translate-x-1 transition-transform"></i>
+            <span class="font-medium">Back to Home</span>
+        </a>
+        
+        <!-- Already have account -->
+        <a href="caregiver-login.html" 
+           class="absolute top-0 right-0 md:right-4 flex items-center space-x-2 text-white/80 hover:text-white transition-all duration-300 group z-50">
+            <span class="font-medium">Already have an account?</span>
+            <i class="fas fa-sign-in-alt group-hover:translate-x-1 transition-transform"></i>
+        </a>
+        
+        <div class="flex flex-col lg:flex-row rounded-2xl overflow-hidden shadow-2xl">
+            
+            <!-- Left Side - Info & Benefits -->
+            <div class="lg:w-2/5 bg-gradient-to-br from-teal-700 to-teal-900 p-8 md:p-12">
+                <div class="h-full flex flex-col justify-between">
+                    <div>
+                        <!-- Logo -->
+                        <div class="flex items-center space-x-3 mb-8">
+                            <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                                <i class="fas fa-hands-helping text-white text-2xl"></i>
+                            </div>
+                            <h1 class="text-2xl font-bold text-white">ElderlyCare<span class="text-accent-400">Assistant</span></h1>
+                        </div>
+                        
+                        <!-- Welcome Message -->
+                        <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">
+                            Join Our Caregiver Community
+                        </h2>
+                        <p class="text-white/80 text-lg mb-8">
+                            Register as a caregiver and connect with families who need your compassionate care and expertise.
+                        </p>
+                        
+                        <!-- Benefits List -->
+                        <div class="space-y-4 mb-8">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                                    <i class="fas fa-money-bill-wave text-accent-400"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-white font-semibold">Competitive Earnings</h4>
+                                    <p class="text-white/70 text-sm">Set your rates and earn what you deserve</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                                    <i class="fas fa-calendar-check text-accent-400"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-white font-semibold">Flexible Schedule</h4>
+                                    <p class="text-white/70 text-sm">Choose when and where you want to work</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                                    <i class="fas fa-shield-alt text-accent-400"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-white font-semibold">Verified Profiles</h4>
+                                    <p class="text-white/70 text-sm">Build trust with verified caregiver status</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                                    <i class="fas fa-star text-accent-400"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-white font-semibold">Ratings & Reviews</h4>
+                                    <p class="text-white/70 text-sm">Showcase your skills and get recognized</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                                    <i class="fas fa-users text-accent-400"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-white font-semibold">Support Network</h4>
+                                    <p class="text-white/70 text-sm">Connect with other caregivers</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Testimonial -->
+                    <div class="glass-morphism rounded-xl p-4">
+                        <div class="flex items-start">
+                            <i class="fas fa-quote-left text-white/40 text-xl mr-3 mt-1"></i>
+                            <div>
+                                <p class="text-white/90 italic mb-2">
+                                    "Joining as a caregiver changed my life. The platform helped me find meaningful work and the support system is amazing!"
+                                </p>
+                                <p class="text-white/70 text-sm">- Anjali Patel, Professional Caregiver (3 years)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Side - Caregiver Signup Form -->
+            <div class="lg:w-3/5 glass-morphism p-8 md:p-12">
+                <!-- Step Indicator -->
+                <div class="flex justify-center mb-8">
+                    <div class="flex items-center space-x-4">
+                        <div class="flex flex-col items-center">
+                            <div class="step-indicator step-active">
+                                <span>1</span>
+                            </div>
+                            <span class="text-white text-xs font-medium mt-2">Personal Info</span>
+                        </div>
+                        
+                        <div class="w-12 h-1 bg-white/20"></div>
+                        
+                        <div class="flex flex-col items-center">
+                            <div class="step-indicator step-inactive">
+                                <span>2</span>
+                            </div>
+                            <span class="text-white/80 text-xs mt-2">Professional Info</span>
+                        </div>
+                        
+                        <div class="w-12 h-1 bg-white/20"></div>
+                        
+                        <div class="flex flex-col items-center">
+                            <div class="step-indicator step-inactive">
+                                <span>3</span>
+                            </div>
+                            <span class="text-white/80 text-xs mt-2">Account Setup</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Multi-step Form -->
+                <form id="caregiverSignupForm" class="space-y-6">
+                    
+                    <!-- Step 1: Personal Information -->
+                    <div id="step1" class="form-step space-y-6">
+                        <div>
+                            <h3 class="text-2xl font-bold text-white mb-2">Personal Information</h3>
+                            <p class="text-white/70">Tell us about yourself</p>
+                        </div>
+                        
+                        <!-- Full Name -->
+                        <div>
+                            <label class="block text-white/90 mb-2 font-medium">
+                                <i class="fas fa-user mr-2"></i>Full Name *
+                            </label>
+                            <input type="text" 
+                                   id="cgName"
+                                   name="cgName"
+                                   placeholder="Enter your full name"
+                                   required
+                                   class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 input-focus outline-none transition-all duration-300">
+                            <p id="nameError" class="text-red-300 text-sm mt-2 h-5"></p>
+                        </div>
+                        
+                        <!-- Email & Phone -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-white/90 mb-2 font-medium">
+                                    <i class="fas fa-envelope mr-2"></i>Email Address *
+                                </label>
+                                <input type="email" 
+                                       id="cgEmail"
+                                       name="cgEmail"
+                                       placeholder="Enter your email"
+                                       required
+                                       class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 input-focus outline-none transition-all duration-300">
+                                <p id="emailError" class="text-red-300 text-sm mt-2 h-5"></p>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-white/90 mb-2 font-medium">
+                                    <i class="fas fa-phone mr-2"></i>Phone Number *
+                                </label>
+                                <input type="tel" 
+                                       id="cgPhone"
+                                       name="cgPhone"
+                                       placeholder="Enter your phone number"
+                                       required
+                                       class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 input-focus outline-none transition-all duration-300">
+                                <p id="phoneError" class="text-red-300 text-sm mt-2 h-5"></p>
+                            </div>
+                        </div>
+                        
+                        <!-- Date of Birth & Gender -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-white/90 mb-2 font-medium">
+                                    <i class="fas fa-calendar-alt mr-2"></i>Date of Birth *
+                                </label>
+                                <input type="date" 
+                                       id="cgDob"
+                                       name="cgDob"
+                                       required
+                                       class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 input-focus outline-none transition-all duration-300">
+                                <p id="dobError" class="text-red-300 text-sm mt-2 h-5"></p>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-white/90 mb-2 font-medium">
+                                    <i class="fas fa-venus-mars mr-2"></i>Gender *
+                                </label>
+                                <select id="cgGender"
+                                        name="cgGender"
+                                        required
+                                        class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white input-focus outline-none transition-all duration-300">
+                                    <option value="" disabled selected>Select gender</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- Address -->
+                        <div>
+                            <label class="block text-white/90 mb-2 font-medium">
+                                <i class="fas fa-home mr-2"></i>Address *
+                            </label>
+                            <input type="text" 
+                                   id="cgAddress"
+                                   name="cgAddress"
+                                   placeholder="Enter your complete address"
+                                   required
+                                   class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 input-focus outline-none transition-all duration-300">
+                        </div>
+                        
+                        <!-- Working City & State -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-white/90 mb-2 font-medium">
+                                    <i class="fas fa-city mr-2"></i>Working City *
+                                </label>
+                                <input type="text" 
+                                       id="cgWorkingCity"
+                                       name="cgWorkingCity"
+                                       placeholder="City where you'll work"
+                                       required
+                                       class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 input-focus outline-none transition-all duration-300">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-white/90 mb-2 font-medium">
+                                    <i class="fas fa-map mr-2"></i>Working State *
+                                </label>
+                                <input type="text" 
+                                       id="cgWorkingState"
+                                       name="cgWorkingState"
+                                       placeholder="State where you'll work"
+                                       required
+                                       class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 input-focus outline-none transition-all duration-300">
+                            </div>
+                        </div>
+                        
+                        <!-- Next Button -->
+                        <button type="button" 
+                                id="nextStep1Btn"
+                                class="w-full py-3.5 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 flex items-center justify-center space-x-3 group">
+                            <span>Continue to Professional Information</span>
+                            <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Step 2: Professional Information -->
+                    <div id="step2" class="form-step form-step-hidden space-y-6">
+                        <div>
+                            <h3 class="text-2xl font-bold text-white mb-2">Professional Information</h3>
+                            <p class="text-white/70">Tell us about your professional background</p>
+                        </div>
+                        
+                        <!-- Experience & Job Type -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-white/90 mb-2 font-medium">
+                                    <i class="fas fa-briefcase mr-2"></i>Years of Experience *
+                                </label>
+                                <input type="number" 
+                                       id="cgExpYears"
+                                       name="cgExpYears"
+                                       placeholder="e.g., 5"
+                                       min="0"
+                                       max="50"
+                                       required
+                                       class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 input-focus outline-none transition-all duration-300">
+                                <p id="expError" class="text-red-300 text-sm mt-2 h-5"></p>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-white/90 mb-2 font-medium">
+                                    <i class="fas fa-user-tie mr-2"></i>Job Type *
+                                </label>
+                                <select id="jobType"
+                                        name="jobType"
+                                        required
+                                        class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white input-focus outline-none transition-all duration-300">
+                                    <option value="" disabled selected>Select job type</option>
+                                    <option value="Full-time">Full-time</option>
+                                    <option value="Part-time">Part-time</option>
+                                    <option value="Weekends">Weekends</option>
+                                    <option value="Freelance">Freelance</option>
+                                    <option value="Contract">Contract</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- Specialization -->
+                        <div>
+                            <label class="block text-white/90 mb-2 font-medium">
+                                <i class="fas fa-stethoscope mr-2"></i>Specialization *
+                            </label>
+                            <div class="text-white/70 text-sm mb-3">Select your areas of expertise (Select at least one)</div>
+                            <div id="specializationContainer" class="flex flex-wrap gap-2 mb-2">
+                                <!-- Specializations will be populated by JavaScript -->
+                            </div>
+                            <input type="hidden" id="cgSpecialization" name="cgSpecialization">
+                            <p id="specializationError" class="text-red-300 text-sm mt-2 h-5"></p>
+                        </div>
+                        
+                        <!-- Skills -->
+                        <div>
+                            <label class="block text-white/90 mb-2 font-medium">
+                                <i class="fas fa-tools mr-2"></i>Skills *
+                            </label>
+                            <div class="text-white/70 text-sm mb-3">Add your caregiving skills (Press Enter to add)</div>
+                            <div class="relative">
+                                <input type="text" 
+                                       id="skillsInput"
+                                       placeholder="e.g., Medication Management, Mobility Assistance"
+                                       class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 input-focus outline-none transition-all duration-300 pr-24">
+                                <button type="button" 
+                                        id="addSkillBtn"
+                                        class="absolute right-2 top-1/2 transform -translate-y-1/2 px-3 py-1 bg-teal-600 hover:bg-teal-700 text-white text-sm rounded-lg transition-all">
+                                    Add Skill
+                                </button>
+                            </div>
+                            <div id="skillsTags" class="flex flex-wrap mt-3">
+                                <!-- Skills tags will appear here -->
+                            </div>
+                            <input type="hidden" id="cgSkills" name="cgSkills">
+                        </div>
+                        
+                        <!-- Languages -->
+                        <div>
+                            <label class="block text-white/90 mb-2 font-medium">
+                                <i class="fas fa-language mr-2"></i>Languages *
+                            </label>
+                            <div class="text-white/70 text-sm mb-3">Add languages you speak (Press Enter to add)</div>
+                            <div class="relative">
+                                <input type="text" 
+                                       id="languagesInput"
+                                       placeholder="e.g., English, Hindi, Marathi"
+                                       class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 input-focus outline-none transition-all duration-300 pr-24">
+                                <button type="button" 
+                                        id="addLanguageBtn"
+                                        class="absolute right-2 top-1/2 transform -translate-y-1/2 px-3 py-1 bg-teal-600 hover:bg-teal-700 text-white text-sm rounded-lg transition-all">
+                                    Add Language
+                                </button>
+                            </div>
+                            <div id="languagesTags" class="flex flex-wrap mt-3">
+                                <!-- Language tags will appear here -->
+                            </div>
+                            <input type="hidden" id="cgLanguages" name="cgLanguages">
+                        </div>
+                        
+                        <!-- Hourly Charges -->
+                        <div>
+                            <label class="block text-white/90 mb-2 font-medium">
+                                <i class="fas fa-rupee-sign mr-2"></i>Hourly Charges (₹) *
+                            </label>
+                            <div class="relative">
+                                <input type="number" 
+                                       id="cgChargesHourly"
+                                       name="cgCharges[hourly]"
+                                       placeholder="e.g., 300"
+                                       min="0"
+                                       step="10"
+                                       required
+                                       class="w-full px-4 py-3 pl-12 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 input-focus outline-none transition-all duration-300">
+                                <div class="absolute left-4 top-1/2 transform -translate-y-1/2">
+                                    <i class="fas fa-rupee-sign text-white/60"></i>
+                                </div>
+                            </div>
+                            <p class="text-white/70 text-xs mt-2">This is your base rate per hour. You can adjust it later.</p>
+                        </div>
+                        
+                        <!-- Profile Description -->
+                        <div>
+                            <label class="block text-white/90 mb-2 font-medium">
+                                <i class="fas fa-file-alt mr-2"></i>Profile Description *
+                            </label>
+                            <textarea id="cgProfileDescription"
+                                      name="cgProfileDescription"
+                                      placeholder="Tell families about your experience, approach to caregiving, and why you're passionate about this work..."
+                                      rows="4"
+                                      maxlength="1000"
+                                      required
+                                      class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 input-focus outline-none transition-all duration-300 resize-none"></textarea>
+                            <div class="flex justify-between mt-2">
+                                <p class="text-white/70 text-xs">Maximum 1000 characters</p>
+                                <p id="charCount" class="text-white/70 text-xs">0/1000</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Navigation Buttons -->
+                        <div class="grid grid-cols-2 gap-6">
+                            <button type="button" 
+                                    id="prevStep2Btn"
+                                    class="py-3.5 bg-white/10 hover:bg-white/20 text-white font-medium rounded-xl transition-all duration-300 flex items-center justify-center space-x-2">
+                                <i class="fas fa-arrow-left"></i>
+                                <span>Back</span>
+                            </button>
+                            
+                            <button type="button" 
+                                    id="nextStep2Btn"
+                                    class="py-3.5 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 flex items-center justify-center space-x-3 group">
+                                <span>Continue to Account Setup</span>
+                                <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 3: Account Setup -->
+                    <div id="step3" class="form-step form-step-hidden space-y-6">
+                        <div>
+                            <h3 class="text-2xl font-bold text-white mb-2">Account Setup & Availability</h3>
+                            <p class="text-white/70">Create your account and set availability</p>
+                        </div>
+                        
+                        <!-- Password -->
+                        <div>
+                            <label class="block text-white/90 mb-2 font-medium">
+                                <i class="fas fa-lock mr-2"></i>Password *
+                            </label>
+                            <div class="relative">
+                                <input type="password" 
+                                       id="cgPassword"
+                                       name="cgPassword"
+                                       placeholder="Create a strong password"
+                                       required
+                                       minlength="6"
+                                       class="w-full px-4 py-3 pl-12 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 input-focus outline-none transition-all duration-300 pr-12">
+                                <div class="absolute left-4 top-1/2 transform -translate-y-1/2">
+                                    <i class="fas fa-lock text-white/60"></i>
+                                </div>
+                                <button type="button" 
+                                        class="absolute right-4 top-1/2 transform -translate-y-1/2 text-white/60 hover:text-white transition-colors password-toggle"
+                                        data-target="cgPassword">
+                                    <i class="fas fa-eye" id="passwordEyeIcon"></i>
+                                </button>
+                            </div>
+                            <p class="text-white/70 text-xs mt-2">Minimum 6 characters</p>
+                        </div>
+                        
+                        <!-- Confirm Password -->
+                        <div>
+                            <label class="block text-white/90 mb-2 font-medium">
+                                <i class="fas fa-lock mr-2"></i>Confirm Password *
+                            </label>
+                            <div class="relative">
+                                <input type="password" 
+                                       id="confirmPassword"
+                                       placeholder="Re-enter your password"
+                                       required
+                                       class="w-full px-4 py-3 pl-12 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 input-focus outline-none transition-all duration-300 pr-12">
+                                <div class="absolute left-4 top-1/2 transform -translate-y-1/2">
+                                    <i class="fas fa-lock text-white/60"></i>
+                                </div>
+                                <button type="button" 
+                                        class="absolute right-4 top-1/2 transform -translate-y-1/2 text-white/60 hover:text-white transition-colors password-toggle"
+                                        data-target="confirmPassword">
+                                    <i class="fas fa-eye" id="confirmPasswordEyeIcon"></i>
+                                </button>
+                            </div>
+                            <p id="confirmPasswordError" class="text-red-300 text-sm mt-2 h-5"></p>
+                        </div>
+                        
+                        <!-- Availability Days -->
+                        <div>
+                            <label class="block text-white/90 mb-2 font-medium">
+                                <i class="fas fa-calendar-day mr-2"></i>Availability Days *
+                            </label>
+                            <div class="text-white/70 text-sm mb-3">Select days you're available</div>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                <div class="flex items-center space-x-2">
+                                    <div class="custom-checkbox" data-day="Monday"></div>
+                                    <span class="text-white">Monday</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <div class="custom-checkbox" data-day="Tuesday"></div>
+                                    <span class="text-white">Tuesday</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <div class="custom-checkbox" data-day="Wednesday"></div>
+                                    <span class="text-white">Wednesday</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <div class="custom-checkbox" data-day="Thursday"></div>
+                                    <span class="text-white">Thursday</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <div class="custom-checkbox" data-day="Friday"></div>
+                                    <span class="text-white">Friday</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <div class="custom-checkbox" data-day="Saturday"></div>
+                                    <span class="text-white">Saturday</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <div class="custom-checkbox" data-day="Sunday"></div>
+                                    <span class="text-white">Sunday</span>
+                                </div>
+                            </div>
+                            <input type="hidden" id="availabilityDays" name="availabilityDays">
+                        </div>
+                        
+                        <!-- Availability Timings -->
+                        <div>
+                            <label class="block text-white/90 mb-2 font-medium">
+                                <i class="fas fa-clock mr-2"></i>Preferred Timings
+                            </label>
+                            <div class="text-white/70 text-sm mb-3">Select your preferred time slots</div>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                <div class="flex items-center space-x-2">
+                                    <div class="custom-checkbox" data-time="morning"></div>
+                                    <span class="text-white">Morning (6AM-12PM)</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <div class="custom-checkbox" data-time="afternoon"></div>
+                                    <span class="text-white">Afternoon (12PM-6PM)</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <div class="custom-checkbox" data-time="evening"></div>
+                                    <span class="text-white">Evening (6PM-10PM)</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <div class="custom-checkbox" data-time="night"></div>
+                                    <span class="text-white">Night (10PM-6AM)</span>
+                                </div>
+                            </div>
+                            <input type="hidden" id="availabilityTimings" name="availabilityTimings">
+                        </div>
+                        
+                        <!-- Terms and Conditions -->
+                        <div class="flex items-start space-x-3">
+                            <div class="relative mt-1">
+                                <input type="checkbox" 
+                                       id="terms"
+                                       required
+                                       class="sr-only">
+                                <div id="termsCheckbox" class="w-5 h-5 bg-white/10 border border-white/30 rounded flex items-center justify-center cursor-pointer hover:bg-white/20 transition-colors">
+                                    <i class="fas fa-check text-white text-xs opacity-0"></i>
+                                </div>
+                            </div>
+                            <label for="terms" class="text-white/80 text-sm cursor-pointer">
+                                I agree to the <a href="#" class="text-teal-300 hover:text-teal-400 underline">Terms of Service</a> and <a href="#" class="text-teal-300 hover:text-teal-400 underline">Privacy Policy</a>. I certify that all information provided is accurate.
+                            </label>
+                        </div>
+                        
+                        <!-- Navigation & Submit -->
+                        <div class="grid grid-cols-2 gap-6">
+                            <button type="button" 
+                                    id="prevStep3Btn"
+                                    class="py-3.5 bg-white/10 hover:bg-white/20 text-white font-medium rounded-xl transition-all duration-300 flex items-center justify-center space-x-2">
+                                <i class="fas fa-arrow-left"></i>
+                                <span>Back</span>
+                            </button>
+                            
+                            <button type="submit" 
+                                    id="submitBtn"
+                                    class="py-3.5 bg-accent-500 hover:bg-accent-600 text-white font-bold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 flex items-center justify-center space-x-3 group">
+                                <span>Complete Registration</span>
+                                <i class="fas fa-user-plus group-hover:translate-x-1 transition-transform"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- Already have account -->
+                        <div class="text-center pt-6 border-t border-white/20">
+                            <p class="text-white/80">
+                                Already have a caregiver account? 
+                                <a href="caregiver-login.html" class="text-accent-300 hover:text-accent-400 font-semibold transition-colors">
+                                    Login here
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Verification Info -->
+        <div class="mt-6 text-center">
+            <div class="inline-flex items-center space-x-2 text-white/60 text-sm">
+                <i class="fas fa-info-circle text-teal-400"></i>
+                <span>After registration, you'll need to submit verification documents to get verified status</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden">
+        <div class="text-center">
+            <div class="spinner w-12 h-12 mb-4 mx-auto"></div>
+            <p class="text-white text-lg font-medium">Creating your caregiver account...</p>
+            <p class="text-white/70 text-sm">Please wait a moment</p>
+        </div>
+    </div>
+    
+    <!-- Success Modal -->
+    <div id="successModal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-2xl max-w-md w-full p-8 text-center animate-slide-up">
+            <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-check text-green-600 text-3xl"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800 mb-4">Registration Successful!</h3>
+            <p class="text-gray-600 mb-4">
+                Welcome to ElderlyCare Assistant as a caregiver! Your account has been created successfully.
+            </p>
+            <p class="text-gray-500 text-sm mb-6">
+                Next steps: Check your email for verification and submit verification documents in your dashboard to get verified status.
+            </p>
+            <div class="space-y-3">
+                <a href="caregiver-dashboard.html" 
+                   class="block w-full py-3.5 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl transition-all duration-300">
+                    Go to Caregiver Dashboard
+                </a>
+                <a href="caregiver-login.html" 
+                   class="block w-full py-3 bg-white border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-all duration-300">
+                    Login to Account
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- External JavaScript -->
+    <script src="./src/js/caregiverSignup.js"></script>
+</body>
+</html>

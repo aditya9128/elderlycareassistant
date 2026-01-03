@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | ElderlyCare Assistant</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Custom Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        secondary: {
+                            50: '#fdf2f8',
+                            100: '#fce7f3',
+                            500: '#ec4899',
+                            600: '#db2777',
+                        },
+                        accent: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                        }
+                    },
+                    fontFamily: {
+                        'poppins': ['Poppins', 'sans-serif'],
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.3s ease-out',
+                        'pulse-glow': 'pulseGlow 2s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { boxShadow: '0 0 20px rgba(14, 165, 233, 0.3)' },
+                            '50%': { boxShadow: '0 0 30px rgba(14, 165, 233, 0.6)' },
+                        }
+                    },
+                    backgroundImage: {
+                        'auth-gradient': 'linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom Styles -->
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(14, 165, 233, 0.5);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(14, 165, 233, 0.8);
+        }
+        
+        /* Glass morphism effect */
+        .glass-morphism {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Input focus effects */
+        .input-focus:focus {
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
+            border-color: #0ea5e9;
+        }
+        
+        /* Loading spinner */
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 3px solid #ffffff;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Password strength meter */
+        .strength-meter {
+            height: 4px;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+        
+        .strength-weak { background-color: #ef4444; }
+        .strength-fair { background-color: #f59e0b; }
+        .strength-good { background-color: #10b981; }
+        .strength-strong { background-color: #22c55e; }
+        
+        /* Step indicator */
+        .step-indicator {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .step-complete {
+            background-color: #10b981;
+            color: white;
+        }
+        
+        .step-active {
+            background-color: #0ea5e9;
+            color: white;
+            transform: scale(1.1);
+        }
+        
+        .step-inactive {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        /* Form step transition */
+        .form-step {
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        
+        .form-step-hidden {
+            opacity: 0;
+            transform: translateX(20px);
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-auth-gradient min-h-screen flex items-center justify-center p-4">
+    
+    <!-- Background decorative elements -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute top-1/4 left-1/4 w-64 h-64 bg-primary-500/10 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary-500/10 rounded-full blur-3xl"></div>
+        <div class="absolute top-3/4 left-1/2 w-48 h-48 bg-accent-500/10 rounded-full blur-3xl"></div>
+    </div>
+
+    <!-- Main Signup Container -->
+    <div class="relative w-full max-w-5xl mx-auto animate-fade-in">
+        <!-- Back to Home Button -->
+        <a href="index.html" 
+           class="absolute top-0 left-0 md:left-4 flex items-center space-x-2 text-white/80 hover:text-white transition-all duration-300 group z-50">
+            <i class="fas fa-arrow-left group-hover:-translate-x-1 transition-transform"></i>
+            <span class="font-medium">Back to Home</span>
+        </a>
+        
+        <!-- Already have account -->
+        <a href="login.html" 
+           class="absolute top-0 right-0 md:right-4 flex items-center space-x-2 text-white/80 hover:text-white transition-all duration-300 group z-50">
+            <span class="font-medium">Already have an account?</span>
+            <i class="fas fa-sign-in-alt group-hover:translate-x-1 transition-transform"></i>
+        </a>
+        
+        <div class="flex flex-col lg:flex-row rounded-2xl overflow-hidden shadow-2xl">
+            
+            <!-- Left Side - Info & Benefits -->
+            <div class="lg:w-2/5 bg-gradient-to-br from-primary-700 to-primary-900 p-8 md:p-12">
+                <div class="h-full flex flex-col justify-between">
+                    <div>
+                        <!-- Logo -->
+                        <div class="flex items-center space-x-3 mb-8">
+                            <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                                <i class="fas fa-heartbeat text-white text-2xl"></i>
+                            </div>
+                            <h1 class="text-2xl font-bold text-white">ElderlyCare<span class="text-accent-400">Assistant</span></h1>
+                        </div>
+                        
+                        <!-- Welcome Message -->
+                        <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">
+                            Join Our Compassionate Community
+                        </h2>
+                        <p class="text-white/80 text-lg mb-8">
+                            Create your account and start your journey towards better elderly care management.
+                        </p>
+                        
+                        <!-- Benefits List -->
+                        <div class="space-y-4 mb-8">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                                    <i class="fas fa-bell text-accent-400"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-white font-semibold">Smart Medical Reminders</h4>
+                                    <p class="text-white/70 text-sm">Never miss medications or appointments</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                                    <i class="fas fa-user-nurse text-accent-400"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-white font-semibold">Verified Caregivers</h4>
+                                    <p class="text-white/70 text-sm">Find trusted caregivers near you</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                                    <i class="fas fa-heartbeat text-accent-400"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-white font-semibold">Health Tracking</h4>
+                                    <p class="text-white/70 text-sm">Monitor health metrics easily</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                                    <i class="fas fa-shield-alt text-accent-400"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-white font-semibold">Secure & Private</h4>
+                                    <p class="text-white/70 text-sm">Your data is encrypted and secure</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Testimonial -->
+                    <div class="glass-morphism rounded-xl p-4">
+                        <div class="flex items-start">
+                            <i class="fas fa-quote-left text-white/40 text-xl mr-3 mt-1"></i>
+                            <div>
+                                <p class="text-white/90 italic mb-2">
+                                    "This platform made caring for my father so much easier. The reminders and caregiver matching are exceptional!"
+                                </p>
+                                <p class="text-white/70 text-sm">- Priya Sharma, Daughter & User</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Side - Signup Form -->
+            <div class="lg:w-3/5 glass-morphism p-8 md:p-12">
+                <!-- Step Indicator -->
+                <div class="flex justify-center mb-8">
+                    <div class="flex items-center space-x-4">
+                        <div class="flex flex-col items-center">
+                            <div class="step-indicator step-active">
+                                <span>1</span>
+                            </div>
+                            <span class="text-white text-xs font-medium mt-2">Basic Info</span>
+                        </div>
+                        
+                        <div class="w-12 h-1 bg-white/20"></div>
+                        
+                        <div class="flex flex-col items-center">
+                            <div class="step-indicator step-inactive">
+                                <span>2</span>
+                            </div>
+                            <span class="text-white/80 text-xs mt-2">Health Details</span>
+                        </div>
+                        
+                        <div class="w-12 h-1 bg-white/20"></div>
+                        
+                        <div class="flex flex-col items-center">
+                            <div class="step-indicator step-inactive">
+                                <span>3</span>
+                            </div>
+                            <span class="text-white/80 text-xs mt-2">Account Setup</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Multi-step Form -->
+                <form id="signupForm" class="space-y-6">
+                    
+                    <!-- Step 1: Basic Information -->
+                    <div id="step1" class="form-step space-y-6">
+                        <div>
+                            <h3 class="text-2xl font-bold text-white mb-2">Basic Information</h3>
+                            <p class="text-white/70">Tell us about yourself</p>
+                        </div>
+                        
+                        <!-- Full Name -->
+                        <div>
+                            <label class="block text-white/90 mb-2 font-medium">
+                                <i class="fas fa-user mr-2"></i>Full Name
+                            </label>
+                            <input type="text" 
+                                   id="UName"
+                                   name="UName"
+                                   placeholder="Enter your full name"
+                                   required
+                                   class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 input-focus outline-none transition-all duration-300">
+                            <p id="nameError" class="text-red-300 text-sm mt-2 h-5"></p>
+                        </div>
+                        
+                        <!-- Email & Phone -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-white/90 mb-2 font-medium">
+                                    <i class="fas fa-envelope mr-2"></i>Email Address
+                                </label>
+                                <input type="email" 
+                                       id="UEmail"
+                                       name="UEmail"
+                                       placeholder="Enter your email"
+                                       required
+                                       class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 input-focus outline-none transition-all duration-300">
+                                <p id="emailError" class="text-red-300 text-sm mt-2 h-5"></p>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-white/90 mb-2 font-medium">
+                                    <i class="fas fa-phone mr-2"></i>Phone Number
+                                </label>
+                                <input type="tel" 
+                                       id="UPhone"
+                                       name="UPhone"
+                                       placeholder="Enter your phone number"
+                                       required
+                                       class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 input-focus outline-none transition-all duration-300">
+                                <p id="phoneError" class="text-red-300 text-sm mt-2 h-5"></p>
+                            </div>
+                        </div>
+                        
+                        <!-- Date of Birth & Gender -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-white/90 mb-2 font-medium">
+                                    <i class="fas fa-calendar-alt mr-2"></i>Date of Birth
+                                </label>
+                                <input type="date" 
+                                       id="UDob"
+                                       name="UDob"
+                                       required
+                                       class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 input-focus outline-none transition-all duration-300">
+                                <p id="dobError" class="text-red-300 text-sm mt-2 h-5"></p>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-white/90 mb-2 font-medium">
+                                    <i class="fas fa-venus-mars mr-2"></i>Gender
+                                </label>
+                                <select id="UGender"
+                                        name="UGender"
+                                        required
+                                        class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white input-focus outline-none transition-all duration-300">
+                                    <option value="" disabled selected>Select gender</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- Address -->
+                        <div>
+                            <label class="block text-white/90 mb-2 font-medium">
+                                <i class="fas fa-home mr-2"></i>Street Address
+                            </label>
+                            <input type="text" 
+                                   id="UStreet"
+                                   name="UStreet"
+                                   placeholder="Enter your street address"
+                                   required
+                                   class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 input-focus outline-none transition-all duration-300">
+                        </div>
+                        
+                        <!-- City, State, Pincode -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div>
+                                <label class="block text-white/90 mb-2 font-medium">City</label>
+                                <input type="text" 
+                                       id="UCity"
+                                       name="UCity"
+                                       placeholder="City"
+                                       required
+                                       class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 input-focus outline-none transition-all duration-300">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-white/90 mb-2 font-medium">State</label>
+                                <input type="text" 
+                                       id="UState"
+                                       name="UState"
+                                       placeholder="State"
+                                       required
+                                       class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 input-focus outline-none transition-all duration-300">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-white/90 mb-2 font-medium">Pincode</label>
+                                <input type="text" 
+                                       id="UPincode"
+                                       name="UPincode"
+                                       placeholder="6-digit pincode"
+                                       maxlength="6"
+                                       required
+                                       class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 input-focus outline-none transition-all duration-300">
+                                <p id="pincodeError" class="text-red-300 text-sm mt-2 h-5"></p>
+                            </div>
+                        </div>
+                        
+                        <!-- Next Button -->
+                        <button type="button" 
+                                id="nextStep1Btn"
+                                class="w-full py-3.5 bg-primary-600 hover:bg-primary-700 text-white font-bold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 flex items-center justify-center space-x-3 group">
+                            <span>Continue to Health Details</span>
+                            <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Step 2: Health Information -->
+                    <div id="step2" class="form-step form-step-hidden space-y-6">
+                        <div>
+                            <h3 class="text-2xl font-bold text-white mb-2">Health Information</h3>
+                            <p class="text-white/70">Help us provide better care (Optional)</p>
+                        </div>
+                        
+                        <!-- Blood Group -->
+                        <div>
+                            <label class="block text-white/90 mb-2 font-medium">
+                                <i class="fas fa-tint mr-2"></i>Blood Group
+                            </label>
+                            <select id="bloodGroup"
+                                    name="bloodGroup"
+                                    class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white input-focus outline-none transition-all duration-300">
+                                <option value="" selected>Select blood group (Optional)</option>
+                                <option value="A+">A+</option>
+                                <option value="A-">A-</option>
+                                <option value="B+">B+</option>
+                                <option value="B-">B-</option>
+                                <option value="AB+">AB+</option>
+                                <option value="AB-">AB-</option>
+                                <option value="O+">O+</option>
+                                <option value="O-">O-</option>
+                                <option value="Unknown">Unknown</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Emergency Contacts -->
+                        <div>
+                            <label class="block text-white/90 mb-2 font-medium">
+                                <i class="fas fa-phone-alt mr-2"></i>Emergency Contact
+                            </label>
+                            <div class="space-y-4">
+                                <div class="flex items-center space-x-3">
+                                    <input type="text" 
+                                           id="emergencyName"
+                                           placeholder="Contact person name"
+                                           class="flex-1 px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 input-focus outline-none">
+                                    <input type="tel" 
+                                           id="emergencyPhone"
+                                           placeholder="Phone number"
+                                           class="flex-1 px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 input-focus outline-none">
+                                </div>
+                                <select id="emergencyRelationship"
+                                        class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white input-focus outline-none">
+                                    <option value="" selected>Relationship (Optional)</option>
+                                    <option value="Spouse">Spouse</option>
+                                    <option value="Child">Child</option>
+                                    <option value="Sibling">Sibling</option>
+                                    <option value="Friend">Friend</option>
+                                    <option value="Neighbor">Neighbor</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- Medical Conditions -->
+                        <div>
+                            <label class="block text-white/90 mb-2 font-medium">
+                                <i class="fas fa-file-medical mr-2"></i>Medical Conditions (Optional)
+                            </label>
+                            <div class="space-y-2" id="conditionsContainer">
+                                <!-- Conditions will be added here dynamically -->
+                            </div>
+                            <button type="button" 
+                                    id="addConditionBtn"
+                                    class="mt-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-all duration-300 flex items-center space-x-2">
+                                <i class="fas fa-plus"></i>
+                                <span>Add Medical Condition</span>
+                            </button>
+                        </div>
+                        
+                        <!-- Navigation Buttons -->
+                        <div class="grid grid-cols-2 gap-6">
+                            <button type="button" 
+                                    id="prevStep2Btn"
+                                    class="py-3.5 bg-white/10 hover:bg-white/20 text-white font-medium rounded-xl transition-all duration-300 flex items-center justify-center space-x-2">
+                                <i class="fas fa-arrow-left"></i>
+                                <span>Back</span>
+                            </button>
+                            
+                            <button type="button" 
+                                    id="nextStep2Btn"
+                                    class="py-3.5 bg-primary-600 hover:bg-primary-700 text-white font-bold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 flex items-center justify-center space-x-3 group">
+                                <span>Continue to Account Setup</span>
+                                <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 3: Account Setup -->
+                    <div id="step3" class="form-step form-step-hidden space-y-6">
+                        <div>
+                            <h3 class="text-2xl font-bold text-white mb-2">Account Setup</h3>
+                            <p class="text-white/70">Create your secure password</p>
+                        </div>
+                        
+                        <!-- Password -->
+                        <div>
+                            <label class="block text-white/90 mb-2 font-medium">
+                                <i class="fas fa-lock mr-2"></i>Password
+                            </label>
+                            <div class="relative">
+                                <input type="password" 
+                                       id="UPassword"
+                                       name="UPassword"
+                                       placeholder="Create a strong password"
+                                       required
+                                       class="w-full px-4 py-3 pl-12 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 input-focus outline-none transition-all duration-300 pr-12">
+                                <div class="absolute left-4 top-1/2 transform -translate-y-1/2">
+                                    <i class="fas fa-lock text-white/60"></i>
+                                </div>
+                                <button type="button" 
+                                        class="absolute right-4 top-1/2 transform -translate-y-1/2 text-white/60 hover:text-white transition-colors password-toggle"
+                                        data-target="UPassword">
+                                    <i class="fas fa-eye" id="passwordEyeIcon"></i>
+                                </button>
+                            </div>
+                            
+                            <!-- Password Strength Meter -->
+                            <div class="mt-3">
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-white/80 text-sm">Password Strength</span>
+                                    <span id="passwordStrengthText" class="text-white/80 text-sm">Weak</span>
+                                </div>
+                                <div class="w-full bg-white/20 rounded-full h-2">
+                                    <div id="passwordStrengthMeter" class="strength-meter strength-weak rounded-full h-2" style="width: 25%"></div>
+                                </div>
+                                <ul class="text-white/60 text-xs mt-2 space-y-1">
+                                    <li id="lengthCheck" class="flex items-center">
+                                        <i class="fas fa-times mr-2 text-red-400"></i>
+                                        At least 6 characters
+                                    </li>
+                                    <li id="uppercaseCheck" class="flex items-center">
+                                        <i class="fas fa-times mr-2 text-red-400"></i>
+                                        Contains uppercase letter
+                                    </li>
+                                    <li id="lowercaseCheck" class="flex items-center">
+                                        <i class="fas fa-times mr-2 text-red-400"></i>
+                                        Contains lowercase letter
+                                    </li>
+                                    <li id="numberCheck" class="flex items-center">
+                                        <i class="fas fa-times mr-2 text-red-400"></i>
+                                        Contains number
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <!-- Confirm Password -->
+                        <div>
+                            <label class="block text-white/90 mb-2 font-medium">
+                                <i class="fas fa-lock mr-2"></i>Confirm Password
+                            </label>
+                            <div class="relative">
+                                <input type="password" 
+                                       id="confirmPassword"
+                                       placeholder="Re-enter your password"
+                                       required
+                                       class="w-full px-4 py-3 pl-12 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 input-focus outline-none transition-all duration-300 pr-12">
+                                <div class="absolute left-4 top-1/2 transform -translate-y-1/2">
+                                    <i class="fas fa-lock text-white/60"></i>
+                                </div>
+                                <button type="button" 
+                                        class="absolute right-4 top-1/2 transform -translate-y-1/2 text-white/60 hover:text-white transition-colors password-toggle"
+                                        data-target="confirmPassword">
+                                    <i class="fas fa-eye" id="confirmPasswordEyeIcon"></i>
+                                </button>
+                            </div>
+                            <p id="confirmPasswordError" class="text-red-300 text-sm mt-2 h-5"></p>
+                        </div>
+                        
+                        <!-- Terms and Conditions -->
+                        <div class="flex items-start space-x-3">
+                            <div class="relative mt-1">
+                                <input type="checkbox" 
+                                       id="terms"
+                                       required
+                                       class="sr-only">
+                                <div id="termsCheckbox" class="w-5 h-5 bg-white/10 border border-white/30 rounded flex items-center justify-center cursor-pointer hover:bg-white/20 transition-colors">
+                                    <i class="fas fa-check text-white text-xs opacity-0"></i>
+                                </div>
+                            </div>
+                            <label for="terms" class="text-white/80 text-sm cursor-pointer">
+                                I agree to the <a href="#" class="text-primary-300 hover:text-primary-400 underline">Terms of Service</a> and <a href="#" class="text-primary-300 hover:text-primary-400 underline">Privacy Policy</a>. I understand that my data will be used to provide better care services.
+                            </label>
+                        </div>
+                        
+                        <!-- Navigation & Submit -->
+                        <div class="grid grid-cols-2 gap-6">
+                            <button type="button" 
+                                    id="prevStep3Btn"
+                                    class="py-3.5 bg-white/10 hover:bg-white/20 text-white font-medium rounded-xl transition-all duration-300 flex items-center justify-center space-x-2">
+                                <i class="fas fa-arrow-left"></i>
+                                <span>Back</span>
+                            </button>
+                            
+                            <button type="submit" 
+                                    id="submitBtn"
+                                    class="py-3.5 bg-accent-500 hover:bg-accent-600 text-white font-bold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 flex items-center justify-center space-x-3 group">
+                                <span>Create Account</span>
+                                <i class="fas fa-user-plus group-hover:translate-x-1 transition-transform"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- Already have account -->
+                        <div class="text-center pt-6 border-t border-white/20">
+                            <p class="text-white/80">
+                                Already have an account? 
+                                <a href="login.html" class="text-accent-300 hover:text-accent-400 font-semibold transition-colors">
+                                    Login here
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Security Badge -->
+        <div class="mt-6 text-center">
+            <div class="inline-flex items-center space-x-2 text-white/60 text-sm">
+                <i class="fas fa-shield-alt text-green-400"></i>
+                <span>Your information is secured with 256-bit SSL encryption</span>
+                <i class="fas fa-lock text-green-400"></i>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden">
+        <div class="text-center">
+            <div class="spinner w-12 h-12 mb-4 mx-auto"></div>
+            <p class="text-white text-lg font-medium">Creating your account...</p>
+            <p class="text-white/70 text-sm">Please wait a moment</p>
+        </div>
+    </div>
+    
+    <!-- Success Modal -->
+    <div id="successModal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-2xl max-w-md w-full p-8 text-center animate-slide-up">
+            <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-check text-green-600 text-3xl"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800 mb-4">Account Created Successfully!</h3>
+            <p class="text-gray-600 mb-6">
+                Welcome to ElderlyCare Assistant. Your account has been created successfully.
+                Please check your email for verification.
+            </p>
+            <div class="space-y-3">
+                <a href="dashboard.html" 
+                   class="block w-full py-3.5 bg-primary-600 hover:bg-primary-700 text-white font-bold rounded-xl transition-all duration-300">
+                    Go to Dashboard
+                </a>
+                <a href="login.html" 
+                   class="block w-full py-3 bg-white border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-all duration-300">
+                    Login to Account
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- External JavaScript -->
+    <script src="./src/js/signup.js"></script>
+</body>
+</html>

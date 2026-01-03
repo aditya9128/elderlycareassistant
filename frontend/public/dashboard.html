@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | ElderlyCare Assistant</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js for health metrics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Custom Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        secondary: {
+                            50: '#fdf2f8',
+                            100: '#fce7f3',
+                            500: '#ec4899',
+                            600: '#db2777',
+                        },
+                        accent: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                        },
+                        dark: {
+                            700: '#003366',
+                            800: '#002244',
+                            900: '#001122',
+                        }
+                    },
+                    fontFamily: {
+                        'poppins': ['Poppins', 'sans-serif'],
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.3s ease-out',
+                        'slide-in-right': 'slideInRight 0.4s ease-out',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'bounce-slow': 'bounce 2s infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        slideInRight: {
+                            '0%': { transform: 'translateX(20px)', opacity: '0' },
+                            '100%': { transform: 'translateX(0)', opacity: '1' },
+                        }
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 20px rgba(0, 0, 0, 0.08)',
+                        'medium': '0 6px 30px rgba(0, 0, 0, 0.12)',
+                        'hard': '0 10px 40px rgba(0, 0, 0, 0.15)',
+                        'sidebar': '4px 0 15px rgba(0, 0, 0, 0.1)',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom Styles -->
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        
+        /* Smooth transitions */
+        .transition-all {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* Card hover effects */
+        .hover-lift:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Status indicators */
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        
+        .status-active { background-color: #22c55e; }
+        .status-pending { background-color: #f59e0b; }
+        .status-cancelled { background-color: #ef4444; }
+        
+        /* Loading skeleton */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+        
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        /* Mobile sidebar overlay */
+        .sidebar-overlay {
+            background: rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 min-h-screen">
+    
+    <!-- Mobile Menu Button -->
+    <button id="mobileMenuButton" class="lg:hidden fixed top-4 left-4 z-50 bg-primary-600 text-white p-3 rounded-xl shadow-lg">
+        <i class="fas fa-bars text-xl"></i>
+    </button>
+    
+    <!-- Sidebar -->
+    <aside id="sidebar" class="w-64 bg-gradient-to-b from-dark-700 to-dark-800 text-white h-screen fixed left-0 top-0 shadow-sidebar z-40 transform -translate-x-full lg:translate-x-0 transition-transform duration-300">
+        <!-- Logo -->
+        <div class="p-6 border-b border-white/10">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-heartbeat text-white"></i>
+                </div>
+                <h1 class="text-xl font-bold">ElderlyCare<span class="text-accent-400">Assistant</span></h1>
+            </div>
+            <p class="text-white/60 text-xs mt-2">Senior Care Dashboard</p>
+        </div>
+        
+        <!-- User Profile Summary -->
+        <div class="p-4 border-b border-white/10">
+            <div class="flex items-center space-x-3">
+                <div class="relative">
+                    <img src="./images/user-default.png" 
+                         alt="Profile Picture" 
+                         id="userProfilePic"
+                         class="w-12 h-12 rounded-full border-2 border-primary-400">
+                    <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-accent-500 rounded-full border-2 border-dark-700"></div>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <h3 id="userName" class="font-semibold truncate">John Doe</h3>
+                    <p id="userEmail" class="text-white/70 text-sm truncate">john@example.com</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Navigation -->
+        <nav class="p-4">
+            <ul class="space-y-2">
+                <li>
+                    <a href="#" class="sidebar-nav-item active">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#appointments" class="sidebar-nav-item">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>Appointments</span>
+                        <span class="sidebar-badge">3</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#medicalReminders" class="sidebar-nav-item">
+                        <i class="fas fa-bell"></i>
+                        <span>Medical Reminders</span>
+                        <span class="sidebar-badge">5</span>
+                    </a>
+                </li>
+                <li>
+                     <a href="find-caregivers.html" class="sidebar-nav-item">
+                     <i class="fas fa-user-nurse"></i>
+                     <span>Find Caregivers</span>
+                     </a>
+                </li>
+                <li>
+                    <a href="#bookings" class="sidebar-nav-item">
+                        <i class="fas fa-clipboard-list"></i>
+                        <span>My Bookings</span>
+                        <span class="sidebar-badge">2</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#requests" class="sidebar-nav-item">
+                        <i class="fas fa-paper-plane"></i>
+                        <span>Sent Requests</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#hospitals" class="sidebar-nav-item">
+                        <i class="fas fa-hospital"></i>
+                        <span>Nearby Hospitals</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#health" class="sidebar-nav-item">
+                        <i class="fas fa-heartbeat"></i>
+                        <span>Health Metrics</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#settings" class="sidebar-nav-item">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <!-- Emergency Quick Access -->
+        <div class="p-4 border-t border-white/10 mt-4">
+            <button onclick="showEmergencyPanel()" 
+                    class="w-full bg-red-500/20 hover:bg-red-500/30 text-red-300 py-3 rounded-xl transition-all flex items-center justify-center space-x-2">
+                <i class="fas fa-phone-alt"></i>
+                <span class="font-semibold">Emergency Contact</span>
+            </button>
+        </div>
+        
+        <!-- Logout -->
+        <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-white/10">
+            <button id="userLogOutBtn" 
+                    class="sidebar-nav-item w-full text-left">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </button>
+        </div>
+    </aside>
+    
+    <!-- Mobile Sidebar Overlay -->
+    <div id="sidebarOverlay" class="lg:hidden fixed inset-0 bg-black/50 z-30 hidden"></div>
+    
+    <!-- Main Content -->
+    <main class="lg:ml-64 min-h-screen animate-fade-in">
+        <!-- Top Bar -->
+        <header class="bg-white shadow-sm sticky top-0 z-30">
+            <div class="px-6 py-4">
+                <div class="flex justify-between items-center">
+                    <!-- Welcome & Date -->
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-800">Welcome back, <span id="welcomeName">John</span>! 👋</h1>
+                        <p class="text-gray-600" id="currentDate">Loading date...</p>
+                    </div>
+                    
+                    <!-- Quick Actions -->
+                    <div class="flex items-center space-x-4">
+                        <!-- Notifications -->
+                        <button class="relative p-2 text-gray-600 hover:text-primary-600 transition-colors">
+                            <i class="fas fa-bell text-xl"></i>
+                            <span class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">3</span>
+                        </button>
+                        
+                        <!-- Search -->
+                        <div class="relative hidden md:block">
+                            <input type="text" 
+                                   placeholder="Search dashboard..." 
+                                   class="pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-200 focus:border-primary-500">
+                            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        </div>
+                        
+                        <!-- Edit Profile -->
+                        <button id="editProfile" 
+                                class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-xl font-medium transition-all flex items-center space-x-2">
+                            <i class="fas fa-user-edit"></i>
+                            <span>Edit Profile</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Dashboard Content -->
+        <div class="p-6">
+            <!-- Stats Overview -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white rounded-2xl p-6 shadow-soft hover-lift transition-all">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm">Upcoming Appointments</p>
+                            <h3 class="text-3xl font-bold text-gray-800 mt-2">3</h3>
+                        </div>
+                        <div class="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-calendar-day text-primary-600 text-xl"></i>
+                        </div>
+                    </div>
+                    <p class="text-green-600 text-sm mt-4">
+                        <i class="fas fa-arrow-up mr-1"></i> 1 new today
+                    </p>
+                </div>
+                
+                <div class="bg-white rounded-2xl p-6 shadow-soft hover-lift transition-all">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm">Active Reminders</p>
+                            <h3 class="text-3xl font-bold text-gray-800 mt-2">5</h3>
+                        </div>
+                        <div class="w-12 h-12 bg-accent-100 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-bell text-accent-600 text-xl"></i>
+                        </div>
+                    </div>
+                    <p class="text-blue-600 text-sm mt-4">
+                        <i class="fas fa-clock mr-1"></i> 2 due today
+                    </p>
+                </div>
+                
+                <div class="bg-white rounded-2xl p-6 shadow-soft hover-lift transition-all">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm">Caregiver Requests</p>
+                            <h3 class="text-3xl font-bold text-gray-800 mt-2">2</h3>
+                        </div>
+                        <div class="w-12 h-12 bg-secondary-100 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-user-nurse text-secondary-600 text-xl"></i>
+                        </div>
+                    </div>
+                    <p class="text-yellow-600 text-sm mt-4">
+                        <i class="fas fa-clock mr-1"></i> 1 pending review
+                    </p>
+                </div>
+                
+                <div class="bg-white rounded-2xl p-6 shadow-soft hover-lift transition-all">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm">Health Score</p>
+                            <h3 class="text-3xl font-bold text-gray-800 mt-2">85%</h3>
+                        </div>
+                        <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-heart text-green-600 text-xl"></i>
+                        </div>
+                    </div>
+                    <p class="text-green-600 text-sm mt-4">
+                        <i class="fas fa-trend-up mr-1"></i> Good progress
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Main Dashboard Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Left Column -->
+                <div class="lg:col-span-2 space-y-6">
+                    <!-- Quick Actions Cards -->
+                    <div class="bg-white rounded-2xl shadow-soft p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-xl font-bold text-gray-800">Quick Actions</h2>
+                            <span class="text-primary-600 text-sm font-medium">Click to navigate</span>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <a href="#myBookings" class="quick-action-card bg-primary-50 border-primary-200">
+                                <div class="quick-action-icon bg-primary-100">
+                                    <i class="fas fa-clipboard-check text-primary-600"></i>
+                                </div>
+                                <h4>My Bookings</h4>
+                                <p>View all accepted bookings</p>
+                            </a>
+                            
+                            <a href="#medicalRemindersCard" class="quick-action-card bg-accent-50 border-accent-200">
+                                <div class="quick-action-icon bg-accent-100">
+                                    <i class="fas fa-pills text-accent-600"></i>
+                                </div>
+                                <h4>View Reminders</h4>
+                                <p>Check/update reminders</p>
+                            </a>
+                            
+                            <a href="#sentRequests" class="quick-action-card bg-secondary-50 border-secondary-200">
+                                <div class="quick-action-icon bg-secondary-100">
+                                    <i class="fas fa-paper-plane text-secondary-600"></i>
+                                </div>
+                                <h4>Sent Requests</h4>
+                                <p>View all sent requests</p>
+                            </a>
+                            
+                            <a href="#setMedicalReminder" class="quick-action-card bg-purple-50 border-purple-200">
+                                <div class="quick-action-icon bg-purple-100">
+                                    <i class="fas fa-plus-circle text-purple-600"></i>
+                                </div>
+                                <h4>Set New Reminder</h4>
+                                <p>Create recurring reminders</p>
+                            </a>
+                            
+                            <a href="#searchCaregivers" class="quick-action-card bg-blue-50 border-blue-200">
+                                <div class="quick-action-icon bg-blue-100">
+                                    <i class="fas fa-search text-blue-600"></i>
+                                </div>
+                                <h4>Search Caregivers</h4>
+                                <p>Find by specialization</p>
+                            </a>
+                            
+                            <a href="#settingsCard" class="quick-action-card bg-gray-100 border-gray-300">
+                                <div class="quick-action-icon bg-gray-200">
+                                    <i class="fas fa-cog text-gray-600"></i>
+                                </div>
+                                <h4>Settings</h4>
+                                <p>Update preferences</p>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Upcoming Appointments -->
+                    <div class="bg-white rounded-2xl shadow-soft p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-xl font-bold text-gray-800">Upcoming Appointments</h2>
+                            <a href="#appointments" class="text-primary-600 hover:text-primary-800 font-medium flex items-center">
+                                View All <i class="fas fa-arrow-right ml-2"></i>
+                            </a>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <!-- Appointment 1 -->
+                            <div class="flex items-center p-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all">
+                                <div class="flex-shrink-0 w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center mr-4">
+                                    <i class="fas fa-user-nurse text-primary-600"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-gray-800">Dr. Anubhav Tiwari</h4>
+                                    <p class="text-gray-600 text-sm">Physical Therapy Session</p>
+                                    <div class="flex items-center mt-2">
+                                        <i class="fas fa-clock text-gray-400 text-sm mr-2"></i>
+                                        <span class="text-gray-700 text-sm">Today, 10:30 AM</span>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <span class="status-dot status-active"></span>
+                                    <span class="text-sm text-green-600">Confirmed</span>
+                                    <button class="block mt-2 text-primary-600 hover:text-primary-800 text-sm">
+                                        <i class="fas fa-video mr-1"></i> Join
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Appointment 2 -->
+                            <div class="flex items-center p-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all">
+                                <div class="flex-shrink-0 w-12 h-12 bg-accent-100 rounded-xl flex items-center justify-center mr-4">
+                                    <i class="fas fa-stethoscope text-accent-600"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-gray-800">Medical Checkup</h4>
+                                    <p class="text-gray-600 text-sm">Routine health assessment</p>
+                                    <div class="flex items-center mt-2">
+                                        <i class="fas fa-clock text-gray-400 text-sm mr-2"></i>
+                                        <span class="text-gray-700 text-sm">Tomorrow, 2:00 PM</span>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <span class="status-dot status-pending"></span>
+                                    <span class="text-sm text-yellow-600">Pending</span>
+                                    <button class="block mt-2 text-primary-600 hover:text-primary-800 text-sm">
+                                        <i class="fas fa-calendar-alt mr-1"></i> Reschedule
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Right Column -->
+                <div class="space-y-6">
+                    <!-- Health Metrics -->
+                    <div class="bg-white rounded-2xl shadow-soft p-6">
+                        <h2 class="text-xl font-bold text-gray-800 mb-6">Health Metrics</h2>
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-sm font-medium text-gray-700">Blood Pressure</span>
+                                    <span class="text-sm font-medium text-green-600">Normal</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-green-600 h-2 rounded-full" style="width: 75%"></div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-sm font-medium text-gray-700">Blood Sugar</span>
+                                    <span class="text-sm font-medium text-yellow-600">Monitor</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-yellow-500 h-2 rounded-full" style="width: 60%"></div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-sm font-medium text-gray-700">Medication Adherence</span>
+                                    <span class="text-sm font-medium text-green-600">95%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-blue-600 h-2 rounded-full" style="width: 95%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6 pt-6 border-t border-gray-200">
+                            <button class="w-full py-3 bg-primary-50 hover:bg-primary-100 text-primary-700 font-medium rounded-xl transition-all flex items-center justify-center">
+                                <i class="fas fa-plus mr-2"></i>
+                                Add Health Reading
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Today's Reminders -->
+                    <div class="bg-white rounded-2xl shadow-soft p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-xl font-bold text-gray-800">Today's Reminders</h2>
+                            <span class="text-red-500 animate-pulse-slow">
+                                <i class="fas fa-clock"></i>
+                            </span>
+                        </div>
+                        
+                        <div class="space-y-3">
+                            <div class="flex items-center p-3 bg-red-50 border border-red-100 rounded-xl">
+                                <div class="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center mr-3">
+                                    <i class="fas fa-pills text-red-600"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-gray-800">Metformin 500mg</h4>
+                                    <p class="text-gray-600 text-sm">Take after breakfast</p>
+                                </div>
+                                <span class="text-red-600 font-medium">9:00 AM</span>
+                            </div>
+                            
+                            <div class="flex items-center p-3 bg-blue-50 border border-blue-100 rounded-xl">
+                                <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                                    <i class="fas fa-heartbeat text-blue-600"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-gray-800">Blood Pressure Check</h4>
+                                    <p class="text-gray-600 text-sm">Morning reading</p>
+                                </div>
+                                <span class="text-blue-600 font-medium">10:00 AM</span>
+                            </div>
+                            
+                            <div class="flex items-center p-3 bg-green-50 border border-green-100 rounded-xl">
+                                <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mr-3">
+                                    <i class="fas fa-walking text-green-600"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-gray-800">Evening Walk</h4>
+                                    <p class="text-gray-600 text-sm">30 minutes</p>
+                                </div>
+                                <span class="text-green-600 font-medium">5:00 PM</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6 pt-6 border-t border-gray-200">
+                            <a href="#medicalReminders" class="w-full py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl transition-all flex items-center justify-center">
+                                <i class="fas fa-bell mr-2"></i>
+                                View All Reminders
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Emergency Contacts -->
+                    <div class="bg-gradient-to-r from-red-500 to-red-600 rounded-2xl p-6 text-white">
+                        <div class="flex items-center mb-4">
+                            <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center mr-3">
+                                <i class="fas fa-phone-alt"></i>
+                            </div>
+                            <h2 class="text-xl font-bold">Emergency Contacts</h2>
+                        </div>
+                        
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between p-3 bg-white/10 rounded-xl">
+                                <div>
+                                    <p class="font-semibold">Medical Emergency</p>
+                                    <p class="text-white/80 text-sm">Ambulance</p>
+                                </div>
+                                <a href="tel:112" class="bg-white text-red-600 px-4 py-1 rounded-lg font-bold hover:bg-gray-100 transition-all">
+                                    112
+                                </a>
+                            </div>
+                            
+                            <div class="flex items-center justify-between p-3 bg-white/10 rounded-xl">
+                                <div>
+                                    <p class="font-semibold">Primary Caregiver</p>
+                                    <p class="text-white/80 text-sm">Ramesh Mali</p>
+                                </div>
+                                <a href="tel:+919876543210" class="bg-white text-red-600 px-4 py-1 rounded-lg font-bold hover:bg-gray-100 transition-all">
+                                    Call
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent Activity -->
+            <div class="bg-white rounded-2xl shadow-soft p-6 mt-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-6">Recent Activity</h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="border-b border-gray-200">
+                                <th class="text-left py-3 text-gray-600 font-medium">Activity</th>
+                                <th class="text-left py-3 text-gray-600 font-medium">Time</th>
+                                <th class="text-left py-3 text-gray-600 font-medium">Status</th>
+                                <th class="text-left py-3 text-gray-600 font-medium">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b border-gray-100 hover:bg-gray-50">
+                                <td class="py-4">
+                                    <div class="flex items-center">
+                                        <div class="w-8 h-8 bg-primary-100 rounded-lg flex items-center justify-center mr-3">
+                                            <i class="fas fa-calendar-plus text-primary-600"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium">Appointment scheduled</p>
+                                            <p class="text-gray-600 text-sm">With Dr. Anubhav Tiwari</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-4">2 hours ago</td>
+                                <td class="py-4">
+                                    <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">
+                                        Confirmed
+                                    </span>
+                                </td>
+                                <td class="py-4">
+                                    <button class="text-primary-600 hover:text-primary-800 text-sm font-medium">
+                                        View Details
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr class="border-b border-gray-100 hover:bg-gray-50">
+                                <td class="py-4">
+                                    <div class="flex items-center">
+                                        <div class="w-8 h-8 bg-accent-100 rounded-lg flex items-center justify-center mr-3">
+                                            <i class="fas fa-bell text-accent-600"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium">Reminder completed</p>
+                                            <p class="text-gray-600 text-sm">Morning medication</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-4">5 hours ago</td>
+                                <td class="py-4">
+                                    <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
+                                        Completed
+                                    </span>
+                                </td>
+                                <td class="py-4">
+                                    <button class="text-primary-600 hover:text-primary-800 text-sm font-medium">
+                                        Log Health
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Emergency Panel Modal -->
+    <div id="emergencyPanel" class="fixed inset-0 bg-black/70 z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-8 animate-slide-up">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-gray-800">Emergency Assistance</h3>
+                <button onclick="hideEmergencyPanel()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+            
+            <div class="space-y-4">
+                <div class="bg-red-50 border border-red-200 rounded-xl p-4">
+                    <div class="flex items-center">
+                        <i class="fas fa-ambulance text-red-500 text-2xl mr-4"></i>
+                        <div>
+                            <h4 class="font-bold text-red-700">Medical Emergency</h4>
+                            <p class="text-red-600 text-lg font-bold">Call: 112 or 911</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-blue-50 border border-blue-200 rounded-xl p-4">
+                    <div class="flex items-center">
+                        <i class="fas fa-phone-alt text-blue-500 text-2xl mr-4"></i>
+                        <div>
+                            <h4 class="font-bold text-blue-700">24/7 Care Line</h4>
+                            <p class="text-blue-600 text-lg font-bold">1-800-ELDER-CARE</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
+                    <div class="flex items-center">
+                        <i class="fas fa-user-md text-yellow-500 text-2xl mr-4"></i>
+                        <div>
+                            <h4 class="font-bold text-yellow-700">Primary Caregiver</h4>
+                            <p class="text-yellow-600">Ramesh Mali: +91 9876543210</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-6 pt-6 border-t border-gray-200">
+                <p class="text-gray-600 text-sm text-center">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    For non-emergency assistance, use the regular contact channels.
+                </p>
+            </div>
+        </div>
+    </div>
+    <script src="./src/js/dashboard.js"></script>
+</body>

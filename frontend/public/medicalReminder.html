@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Reminders | ElderlyCare Assistant</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Flatpickr for date/time picker -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    
+    <!-- Custom Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        secondary: {
+                            50: '#fdf2f8',
+                            100: '#fce7f3',
+                            500: '#ec4899',
+                            600: '#db2777',
+                        },
+                        accent: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                        },
+                        dark: {
+                            700: '#003366',
+                            800: '#002244',
+                            900: '#001122',
+                        },
+                        reminder: {
+                            medication: '#3b82f6',
+                            appointment: '#10b981',
+                            checkup: '#8b5cf6',
+                            exercise: '#f59e0b',
+                            meal: '#ef4444',
+                            water: '#06b6d4',
+                            other: '#6b7280'
+                        }
+                    },
+                    fontFamily: {
+                        'poppins': ['Poppins', 'sans-serif'],
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.3s ease-out',
+                        'slide-in-right': 'slideInRight 0.4s ease-out',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'bounce-slow': 'bounce 2s infinite',
+                        'wiggle': 'wiggle 0.5s ease-in-out',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        slideInRight: {
+                            '0%': { transform: 'translateX(20px)', opacity: '0' },
+                            '100%': { transform: 'translateX(0)', opacity: '1' },
+                        },
+                        wiggle: {
+                            '0%, 100%': { transform: 'rotate(-3deg)' },
+                            '50%': { transform: 'rotate(3deg)' },
+                        }
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 20px rgba(0, 0, 0, 0.08)',
+                        'medium': '0 6px 30px rgba(0, 0, 0, 0.12)',
+                        'hard': '0 10px 40px rgba(0, 0, 0, 0.15)',
+                        'sidebar': '4px 0 15px rgba(0, 0, 0, 0.1)',
+                        'inner-soft': 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom Styles -->
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        
+        /* Smooth transitions */
+        .transition-all {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* Status indicators */
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        
+        .status-active { background-color: #22c55e; }
+        .status-paused { background-color: #f59e0b; }
+        .status-completed { background-color: #3b82f6; }
+        .status-cancelled { background-color: #ef4444; }
+        .status-expired { background-color: #6b7280; }
+        
+        /* Priority indicators */
+        .priority-badge {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .priority-low { background-color: #d1d5db; color: #374151; }
+        .priority-medium { background-color: #93c5fd; color: #1e40af; }
+        .priority-high { background-color: #fbbf24; color: #92400e; }
+        .priority-critical { background-color: #fca5a5; color: #991b1b; }
+        
+        /* Category colors */
+        .category-medication { border-left: 4px solid #3b82f6; }
+        .category-appointment { border-left: 4px solid #10b981; }
+        .category-checkup { border-left: 4px solid #8b5cf6; }
+        .category-exercise { border-left: 4px solid #f59e0b; }
+        .category-meal { border-left: 4px solid #ef4444; }
+        .category-water { border-left: 4px solid #06b6d4; }
+        .category-other { border-left: 4px solid #6b7280; }
+        
+        /* Loading skeleton */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+        
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        /* Reminder card hover effect */
+        .reminder-card {
+            transition: all 0.3s ease;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .reminder-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-color: #d1d5db;
+        }
+        
+        /* Due reminder animation */
+        .due-reminder {
+            animation: pulse-glow 2s infinite;
+            border: 2px solid transparent;
+        }
+        
+        @keyframes pulse-glow {
+            0%, 100% { 
+                box-shadow: 0 0 5px rgba(239, 68, 68, 0.3);
+                border-color: rgba(239, 68, 68, 0.1);
+            }
+            50% { 
+                box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+                border-color: rgba(239, 68, 68, 0.3);
+            }
+        }
+        
+        /* Form styling */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #374151;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            background-color: white;
+            color: #374151;
+            transition: all 0.2s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        /* Time badge styling */
+        .time-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            background-color: #e0f2fe;
+            color: #0369a1;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin: 0.25rem;
+        }
+        
+        .time-badge i {
+            margin-right: 0.25rem;
+        }
+        
+        /* Tab styling */
+        .reminder-tab {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        
+        .reminder-tab.active {
+            background-color: #0ea5e9;
+            color: white;
+        }
+        
+        .reminder-tab:not(.active):hover {
+            background-color: #f3f4f6;
+        }
+        
+        /* Empty state */
+        .empty-state {
+            padding: 4rem 2rem;
+            text-align: center;
+            color: #6b7280;
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 min-h-screen">
+    
+    <!-- Mobile Menu Button -->
+    <button id="mobileMenuButton" class="lg:hidden fixed top-4 left-4 z-50 bg-primary-600 text-white p-3 rounded-xl shadow-lg">
+        <i class="fas fa-bars text-xl"></i>
+    </button>
+    
+    <!-- Sidebar -->
+    <aside id="sidebar" class="w-64 bg-gradient-to-b from-dark-700 to-dark-800 text-white h-screen fixed left-0 top-0 shadow-sidebar z-40 transform -translate-x-full lg:translate-x-0 transition-transform duration-300">
+        <!-- Logo -->
+        <div class="p-6 border-b border-white/10">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-heartbeat text-white"></i>
+                </div>
+                <h1 class="text-xl font-bold">ElderlyCare<span class="text-accent-400">Assistant</span></h1>
+            </div>
+            <p class="text-white/60 text-xs mt-2">Medical Reminders</p>
+        </div>
+        
+        <!-- User Profile Summary -->
+        <div class="p-4 border-b border-white/10">
+            <div class="flex items-center space-x-3">
+                <div class="relative">
+                    <img src="./images/user-default.png" 
+                         alt="Profile Picture" 
+                         id="userProfilePic"
+                         class="w-12 h-12 rounded-full border-2 border-primary-400">
+                    <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-accent-500 rounded-full border-2 border-dark-700"></div>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <h3 id="userName" class="font-semibold truncate">Loading...</h3>
+                    <p id="userEmail" class="text-white/70 text-sm truncate">Loading...</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Navigation -->
+        <nav class="p-4">
+            <ul class="space-y-2">
+                <li>
+                    <a href="dashboard.html" class="sidebar-nav-item">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="sidebar-nav-item active">
+                        <i class="fas fa-bell"></i>
+                        <span>Medical Reminders</span>
+                        <span id="remindersBadge" class="sidebar-badge">0</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#medicationReminders" class="sidebar-nav-item">
+                        <i class="fas fa-pills"></i>
+                        <span>Medications</span>
+                        <span id="medicationBadge" class="sidebar-badge">0</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#appointmentReminders" class="sidebar-nav-item">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>Appointments</span>
+                        <span id="appointmentBadge" class="sidebar-badge">0</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#quickAdd" class="sidebar-nav-item">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>Quick Add</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#history" class="sidebar-nav-item">
+                        <i class="fas fa-history"></i>
+                        <span>History</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#settings" class="sidebar-nav-item">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <!-- Quick Stats -->
+        <div class="p-4 border-t border-white/10 mt-4">
+            <div class="space-y-3">
+                <div class="flex justify-between items-center">
+                    <span class="text-white/70 text-sm">Active Reminders</span>
+                    <span id="activeRemindersCount" class="text-white font-bold">0</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-white/70 text-sm">Due Today</span>
+                    <span id="dueTodayCount" class="text-white font-bold">0</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-white/70 text-sm">Completion Rate</span>
+                    <span id="completionRate" class="text-white font-bold">0%</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Logout -->
+        <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-white/10">
+            <button id="userLogOutBtn" 
+                    class="sidebar-nav-item w-full text-left">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </button>
+        </div>
+    </aside>
+    
+    <!-- Mobile Sidebar Overlay -->
+    <div id="sidebarOverlay" class="lg:hidden fixed inset-0 bg-black/50 z-30 hidden"></div>
+    
+    <!-- Main Content -->
+    <main class="lg:ml-64 min-h-screen animate-fade-in">
+        <!-- Top Bar -->
+        <header class="bg-white shadow-sm sticky top-0 z-30">
+            <div class="px-6 py-4">
+                <div class="flex justify-between items-center">
+                    <!-- Page Title & Breadcrumb -->
+                    <div>
+                        <div class="flex items-center space-x-2 text-sm text-gray-600 mb-1">
+                            <a href="dashboard.html" class="hover:text-primary-600">Dashboard</a>
+                            <span>/</span>
+                            <span class="font-medium text-gray-800">Medical Reminders</span>
+                        </div>
+                        <h1 class="text-2xl font-bold text-gray-800">Medical Reminders</h1>
+                        <p class="text-gray-600" id="currentDate">Loading date...</p>
+                    </div>
+                    
+                    <!-- Quick Actions -->
+                    <div class="flex items-center space-x-4">
+                        <!-- Search -->
+                        <div class="relative hidden md:block">
+                            <input type="text" 
+                                   id="searchReminders"
+                                   placeholder="Search reminders..." 
+                                   class="pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-200 focus:border-primary-500">
+                            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        </div>
+                        
+                        <!-- Filter Button -->
+                        <button id="filterButton" 
+                                class="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-xl font-medium transition-all flex items-center space-x-2">
+                            <i class="fas fa-filter"></i>
+                            <span>Filter</span>
+                        </button>
+                        
+                        <!-- Add New Reminder Button -->
+                        <button id="addReminderButton" 
+                                class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-xl font-medium transition-all flex items-center space-x-2 animate-wiggle">
+                            <i class="fas fa-plus"></i>
+                            <span>New Reminder</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Stats Overview -->
+        <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white rounded-2xl p-6 shadow-soft hover-lift transition-all">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm">Total Reminders</p>
+                            <h3 id="totalReminders" class="text-3xl font-bold text-gray-800 mt-2">0</h3>
+                        </div>
+                        <div class="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-bell text-primary-600 text-xl"></i>
+                        </div>
+                    </div>
+                    <p class="text-green-600 text-sm mt-4">
+                        <i class="fas fa-arrow-up mr-1"></i> <span id="reminderChange">0 new</span> today
+                    </p>
+                </div>
+                
+                <div class="bg-white rounded-2xl p-6 shadow-soft hover-lift transition-all">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm">Due Today</p>
+                            <h3 id="dueReminders" class="text-3xl font-bold text-gray-800 mt-2">0</h3>
+                        </div>
+                        <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-clock text-red-600 text-xl"></i>
+                        </div>
+                    </div>
+                    <p class="text-red-600 text-sm mt-4">
+                        <i class="fas fa-exclamation-circle mr-1"></i> Needs attention
+                    </p>
+                </div>
+                
+                <div class="bg-white rounded-2xl p-6 shadow-soft hover-lift transition-all">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm">Completion Rate</p>
+                            <h3 id="completionPercentage" class="text-3xl font-bold text-gray-800 mt-2">0%</h3>
+                        </div>
+                        <div class="w-12 h-12 bg-accent-100 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-check-circle text-accent-600 text-xl"></i>
+                        </div>
+                    </div>
+                    <p class="text-green-600 text-sm mt-4">
+                        <i class="fas fa-trend-up mr-1"></i> Good progress
+                    </p>
+                </div>
+                
+                <div class="bg-white rounded-2xl p-6 shadow-soft hover-lift transition-all">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm">Current Streak</p>
+                            <h3 id="currentStreak" class="text-3xl font-bold text-gray-800 mt-2">0 days</h3>
+                        </div>
+                        <div class="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-fire text-yellow-600 text-xl"></i>
+                        </div>
+                    </div>
+                    <p class="text-yellow-600 text-sm mt-4">
+                        <i class="fas fa-medal mr-1"></i> Keep going!
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Tabs Navigation -->
+            <div class="flex mb-6 rounded-xl bg-white/10 p-1 overflow-x-auto">
+                <button id="allRemindersTab" class="reminder-tab flex items-center space-x-2 active">
+                    <i class="fas fa-list"></i>
+                    <span>All Reminders</span>
+                    <span id="allCountBadge" class="ml-2 px-2 py-0.5 bg-white/20 rounded-full text-xs">0</span>
+                </button>
+                <button id="dueRemindersTab" class="reminder-tab flex items-center space-x-2">
+                    <i class="fas fa-clock"></i>
+                    <span>Due Now</span>
+                    <span id="dueCountBadge" class="ml-2 px-2 py-0.5 bg-red-500 text-white rounded-full text-xs">0</span>
+                </button>
+                <button id="medicationTab" class="reminder-tab flex items-center space-x-2">
+                    <i class="fas fa-pills"></i>
+                    <span>Medications</span>
+                    <span id="medicationCountBadge" class="ml-2 px-2 py-0.5 bg-blue-500 text-white rounded-full text-xs">0</span>
+                </button>
+                <button id="appointmentTab" class="reminder-tab flex items-center space-x-2">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Appointments</span>
+                    <span id="appointmentCountBadge" class="ml-2 px-2 py-0.5 bg-green-500 text-white rounded-full text-xs">0</span>
+                </button>
+                <button id="completedTab" class="reminder-tab flex items-center space-x-2">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Completed</span>
+                    <span id="completedCountBadge" class="ml-2 px-2 py-0.5 bg-gray-500 text-white rounded-full text-xs">0</span>
+                </button>
+            </div>
+            
+            <!-- Main Content Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Left Column - Reminders List -->
+                <div class="lg:col-span-2">
+                    <!-- Reminders List -->
+                    <div id="remindersList" class="space-y-4">
+                        <!-- Reminders will be loaded here dynamically -->
+                        <div class="empty-state bg-white rounded-2xl shadow-soft">
+                            <i class="fas fa-bell-slash"></i>
+                            <h3 class="text-xl font-semibold mb-2">No reminders yet</h3>
+                            <p class="mb-4">Create your first medical reminder to get started</p>
+                            <button id="createFirstReminder" class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg font-medium">
+                                <i class="fas fa-plus mr-2"></i>Create First Reminder
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Load More Button -->
+                    <div id="loadMoreContainer" class="mt-6 text-center hidden">
+                        <button id="loadMoreButton" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-3 rounded-xl font-medium transition-all">
+                            <i class="fas fa-spinner mr-2"></i>Load More Reminders
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Right Column - Due Now & Quick Actions -->
+                <div class="space-y-6">
+                    <!-- Due Now Card -->
+                    <div id="dueNowCard" class="bg-white rounded-2xl shadow-soft p-6 hidden">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-xl font-bold text-gray-800">Due Now</h2>
+                            <span class="text-red-500 animate-pulse-slow">
+                                <i class="fas fa-exclamation-circle"></i>
+                            </span>
+                        </div>
+                        <div id="dueNowList" class="space-y-3">
+                            <!-- Due reminders will be loaded here -->
+                        </div>
+                        <div class="mt-6 pt-6 border-t border-gray-200">
+                            <button id="viewAllDue" class="w-full py-3 bg-red-50 hover:bg-red-100 text-red-700 font-medium rounded-xl transition-all flex items-center justify-center">
+                                <i class="fas fa-clock mr-2"></i>
+                                View All Due Reminders
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Actions -->
+                    <div class="bg-white rounded-2xl shadow-soft p-6">
+                        <h2 class="text-xl font-bold text-gray-800 mb-6">Quick Actions</h2>
+                        <div class="space-y-3">
+                            <button id="takeMedication" class="w-full py-3 bg-blue-50 hover:bg-blue-100 text-blue-700 font-medium rounded-xl transition-all flex items-center justify-center">
+                                <i class="fas fa-pills mr-2"></i>
+                                Mark Medication Taken
+                            </button>
+                            <button id="skipReminder" class="w-full py-3 bg-yellow-50 hover:bg-yellow-100 text-yellow-700 font-medium rounded-xl transition-all flex items-center justify-center">
+                                <i class="fas fa-forward mr-2"></i>
+                                Skip for Today
+                            </button>
+                            <button id="snoozeReminder" class="w-full py-3 bg-purple-50 hover:bg-purple-100 text-purple-700 font-medium rounded-xl transition-all flex items-center justify-center">
+                                <i class="fas fa-clock mr-2"></i>
+                                Snooze for 30 Min
+                            </button>
+                            <button id="addQuickReminder" class="w-full py-3 bg-green-50 hover:bg-green-100 text-green-700 font-medium rounded-xl transition-all flex items-center justify-center">
+                                <i class="fas fa-bolt mr-2"></i>
+                                Quick Add Reminder
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Reminder Categories -->
+                    <div class="bg-white rounded-2xl shadow-soft p-6">
+                        <h2 class="text-xl font-bold text-gray-800 mb-6">Categories</h2>
+                        <div id="categoriesList" class="space-y-2">
+                            <!-- Categories will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Create/Edit Reminder Modal -->
+    <div id="reminderModal" class="fixed inset-0 bg-black/70 z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="sticky top-0 bg-white border-b border-gray-200 p-6">
+                <div class="flex justify-between items-center">
+                    <h3 id="modalTitle" class="text-2xl font-bold text-gray-800">Create New Reminder</h3>
+                    <button id="closeModal" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="p-6">
+                <form id="reminderForm">
+                    <!-- Reminder Details -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Title -->
+                        <div class="form-group md:col-span-2">
+                            <label class="form-label">
+                                <i class="fas fa-heading mr-2"></i>Reminder Title*
+                            </label>
+                            <input type="text" 
+                                   id="reminderTitle"
+                                   required
+                                   placeholder="e.g., Morning Medication, Doctor Appointment"
+                                   class="form-input">
+                        </div>
+                        
+                        <!-- Description -->
+                        <div class="form-group md:col-span-2">
+                            <label class="form-label">
+                                <i class="fas fa-align-left mr-2"></i>Description
+                            </label>
+                            <textarea id="reminderDescription" 
+                                      rows="3"
+                                      placeholder="Add any additional details about this reminder..."
+                                      class="form-input"></textarea>
+                        </div>
+                        
+                        <!-- Category -->
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-tag mr-2"></i>Category*
+                            </label>
+                            <select id="reminderCategory" required class="form-input">
+                                <option value="">Select Category</option>
+                                <option value="Medication">Medication</option>
+                                <option value="Doctor Appointment">Doctor Appointment</option>
+                                <option value="Health Checkup">Health Checkup</option>
+                                <option value="Exercise">Exercise</option>
+                                <option value="Meal">Meal</option>
+                                <option value="Water Intake">Water Intake</option>
+                                <option value="Sleep">Sleep</option>
+                                <option value="Vaccination">Vaccination</option>
+                                <option value="Lab Test">Lab Test</option>
+                                <option value="Therapy">Therapy</option>
+                                <option value="Follow-up">Follow-up</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Priority -->
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-exclamation-circle mr-2"></i>Priority
+                            </label>
+                            <select id="reminderPriority" class="form-input">
+                                <option value="Medium">Medium</option>
+                                <option value="Low">Low</option>
+                                <option value="High">High</option>
+                                <option value="Critical">Critical</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Medication Specific Fields (hidden by default) -->
+                        <div id="medicationFields" class="hidden md:col-span-2 space-y-4">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="fas fa-pills mr-2"></i>Medicine Name
+                                    </label>
+                                    <input type="text" 
+                                           id="medicineName"
+                                           placeholder="e.g., Metformin"
+                                           class="form-input">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="fas fa-prescription mr-2"></i>Dosage
+                                    </label>
+                                    <input type="text" 
+                                           id="medicineDosage"
+                                           placeholder="e.g., 500mg"
+                                           class="form-input">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="fas fa-capsules mr-2"></i>Medicine Type
+                                    </label>
+                                    <select id="medicineType" class="form-input">
+                                        <option value="">Select Type</option>
+                                        <option value="Tablet">Tablet</option>
+                                        <option value="Capsule">Capsule</option>
+                                        <option value="Syrup">Syrup</option>
+                                        <option value="Injection">Injection</option>
+                                        <option value="Inhaler">Inhaler</option>
+                                        <option value="Cream">Cream</option>
+                                        <option value="Drops">Drops</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-info-circle mr-2"></i>Dosage Instructions
+                                </label>
+                                <input type="text" 
+                                       id="dosageInstructions"
+                                       placeholder="e.g., Take after breakfast"
+                                       class="form-input">
+                            </div>
+                        </div>
+                        
+                        <!-- Schedule Type -->
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-calendar-alt mr-2"></i>Schedule Type*
+                            </label>
+                            <select id="scheduleType" required class="form-input">
+                                <option value="One-time">One-time</option>
+                                <option value="Daily" selected>Daily</option>
+                                <option value="Weekly">Weekly</option>
+                                <option value="Monthly">Monthly</option>
+                                <option value="Custom">Custom</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Start Date -->
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-play-circle mr-2"></i>Start Date*
+                            </label>
+                            <input type="date" 
+                                   id="startDate"
+                                   required
+                                   class="form-input">
+                        </div>
+                        
+                        <!-- Times (for recurring) -->
+                        <div id="timeFields" class="form-group md:col-span-2">
+                            <label class="form-label">
+                                <i class="fas fa-clock mr-2"></i>Reminder Times*
+                            </label>
+                            <div class="space-y-2">
+                                <div class="flex items-center space-x-2">
+                                    <input type="time" 
+                                           id="reminderTime1"
+                                           required
+                                           class="form-input w-32">
+                                    <button type="button" id="addTimeButton" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg">
+                                        <i class="fas fa-plus"></i> Add Another Time
+                                    </button>
+                                </div>
+                                <div id="additionalTimes" class="space-y-2"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Days of Week (for weekly) -->
+                        <div id="daysOfWeekFields" class="form-group md:col-span-2 hidden">
+                            <label class="form-label">
+                                <i class="fas fa-calendar-week mr-2"></i>Days of Week
+                            </label>
+                            <div class="flex flex-wrap gap-2">
+                                <label class="inline-flex items-center">
+                                    <input type="checkbox" name="days" value="Monday" class="mr-2">
+                                    <span>Mon</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="checkbox" name="days" value="Tuesday" class="mr-2">
+                                    <span>Tue</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="checkbox" name="days" value="Wednesday" class="mr-2">
+                                    <span>Wed</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="checkbox" name="days" value="Thursday" class="mr-2">
+                                    <span>Thu</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="checkbox" name="days" value="Friday" class="mr-2">
+                                    <span>Fri</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="checkbox" name="days" value="Saturday" class="mr-2">
+                                    <span>Sat</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="checkbox" name="days" value="Sunday" class="mr-2">
+                                    <span>Sun</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <!-- Frequency (for medications) -->
+                        <div id="frequencyField" class="form-group hidden">
+                            <label class="form-label">
+                                <i class="fas fa-utensils mr-2"></i>Take With
+                            </label>
+                            <select id="medicationFrequency" class="form-input">
+                                <option value="">Select</option>
+                                <option value="Before Meal">Before Meal</option>
+                                <option value="After Meal">After Meal</option>
+                                <option value="With Meal">With Meal</option>
+                                <option value="Empty Stomach">Empty Stomach</option>
+                                <option value="Bedtime">Bedtime</option>
+                                <option value="Morning">Morning</option>
+                                <option value="Anytime">Anytime</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Notification Settings -->
+                    <div class="mt-8 pt-8 border-t border-gray-200">
+                        <h4 class="text-lg font-semibold text-gray-800 mb-4">
+                            <i class="fas fa-bell mr-2"></i>Notification Settings
+                        </h4>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="font-medium">Push Notifications</p>
+                                    <p class="text-gray-600 text-sm">Send push notifications to your device</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="pushNotifications" class="sr-only peer" checked>
+                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>
+                                </label>
+                            </div>
+                            
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="font-medium">Email Notifications</p>
+                                    <p class="text-gray-600 text-sm">Send email reminders</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="emailNotifications" class="sr-only peer" checked>
+                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>
+                                </label>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-clock mr-2"></i>Advance Notification (minutes)
+                                </label>
+                                <input type="number" 
+                                       id="advanceNotification"
+                                       min="0"
+                                       max="1440"
+                                       value="15"
+                                       class="form-input w-32">
+                                <p class="text-gray-600 text-sm mt-1">How many minutes before to notify you</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Form Actions -->
+                    <div class="mt-8 pt-8 border-t border-gray-200 flex justify-end space-x-4">
+                        <button type="button" id="cancelReminder" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50 transition-all">
+                            Cancel
+                        </button>
+                        <button type="submit" id="saveReminder" class="px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-medium transition-all">
+                            <i class="fas fa-save mr-2"></i>Save Reminder
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Mark Complete Modal -->
+    <div id="completeModal" class="fixed inset-0 bg-black/70 z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-8">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-gray-800">Mark Reminder</h3>
+                <button id="closeCompleteModal" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+            
+            <div id="reminderToComplete" class="mb-6">
+                <!-- Reminder details will be loaded here -->
+            </div>
+            
+            <div class="space-y-4 mb-6">
+                <div>
+                    <label class="form-label mb-2">Status</label>
+                    <select id="completionStatus" class="form-input">
+                        <option value="Taken">Taken/Completed</option>
+                        <option value="Skipped">Skipped</option>
+                        <option value="Missed">Missed</option>
+                        <option value="Delayed">Delayed</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="form-label mb-2">Notes (Optional)</label>
+                    <textarea id="completionNotes" 
+                              rows="3"
+                              placeholder="Add any notes about completion..."
+                              class="form-input"></textarea>
+                </div>
+            </div>
+            
+            <div class="flex justify-end space-x-4">
+                <button id="cancelComplete" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50 transition-all">
+                    Cancel
+                </button>
+                <button id="confirmComplete" class="px-6 py-3 bg-accent-500 hover:bg-accent-600 text-white rounded-xl font-medium transition-all">
+                    <i class="fas fa-check mr-2"></i>Confirm
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Filter Modal -->
+    <div id="filterModal" class="fixed inset-0 bg-black/70 z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-8">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-gray-800">Filter Reminders</h3>
+                <button id="closeFilterModal" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+            
+            <div class="space-y-6">
+                <div>
+                    <label class="form-label mb-2">Category</label>
+                    <select id="filterCategory" class="form-input">
+                        <option value="">All Categories</option>
+                        <option value="Medication">Medication</option>
+                        <option value="Doctor Appointment">Doctor Appointment</option>
+                        <option value="Health Checkup">Health Checkup</option>
+                        <option value="Exercise">Exercise</option>
+                        <option value="Meal">Meal</option>
+                        <option value="Water Intake">Water Intake</option>
+                        <option value="Sleep">Sleep</option>
+                        <option value="Vaccination">Vaccination</option>
+                        <option value="Lab Test">Lab Test</option>
+                        <option value="Therapy">Therapy</option>
+                        <option value="Follow-up">Follow-up</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="form-label mb-2">Status</label>
+                    <select id="filterStatus" class="form-input">
+                        <option value="">All Status</option>
+                        <option value="Active">Active</option>
+                        <option value="Paused">Paused</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Cancelled">Cancelled</option>
+                        <option value="Expired">Expired</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="form-label mb-2">Priority</label>
+                    <select id="filterPriority" class="form-input">
+                        <option value="">All Priorities</option>
+                        <option value="Low">Low</option>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
+                        <option value="Critical">Critical</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="form-label mb-2">Date Range</label>
+                    <div class="grid grid-cols-2 gap-4">
+                        <input type="date" id="filterStartDate" class="form-input" placeholder="Start Date">
+                        <input type="date" id="filterEndDate" class="form-input" placeholder="End Date">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-8 pt-8 border-t border-gray-200 flex justify-end space-x-4">
+                <button id="resetFilters" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50 transition-all">
+                    Reset
+                </button>
+                <button id="applyFilters" class="px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-medium transition-all">
+                    Apply Filters
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-black/70 z-50 hidden items-center justify-center">
+        <div class="text-center">
+            <div class="spinner w-12 h-12 mb-4 mx-auto border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+            <p class="text-white text-lg font-medium">Loading...</p>
+            <p class="text-white/70 text-sm">Please wait a moment</p>
+        </div>
+    </div>
+    
+    <!-- External JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="./src/js/medicalReminder.js"></script>
+</body>
+</html>

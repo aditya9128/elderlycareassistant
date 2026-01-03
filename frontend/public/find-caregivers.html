@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Caregivers | ElderlyCare Assistant</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Add primary color definition if not already present */
+        .bg-primary-600 {
+            background-color: #3b82f6; /* Blue color */
+        }
+        
+        .bg-primary-600:hover {
+            background-color: #2563eb;
+        }
+        
+        .text-primary-600 {
+            color: #3b82f6;
+        }
+        
+        /* Ensure text is visible */
+        #searchBtn {
+            color: white !important;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        
+        .transition-all {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+        
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        
+        .status-available { background-color: #22c55e; }
+        .status-busy { background-color: #ef4444; }
+        .status-offline { background-color: #9ca3af; }
+        
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+        
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        /* Modal animation */
+        .animate-slide-up {
+            animation: slideUp 0.3s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate-slide-in-right {
+            animation: slideInRight 0.3s ease-out;
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 min-h-screen">
+    
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-30">
+        <div class="px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <button onclick="goBack()" class="text-gray-600 hover:text-primary-600 p-2">
+                        <i class="fas fa-arrow-left text-xl"></i>
+                    </button>
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-800">Find Caregivers</h1>
+                        <p class="text-gray-600 text-sm">Search and book professional caregivers</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <button id="viewBookingsBtn" 
+                            class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-xl font-medium transition-all flex items-center space-x-2">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>My Bookings</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="p-6">
+        <!-- Search and Filters -->
+        <div class="bg-white rounded-2xl shadow-soft p-6 mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                <!-- Specialization Filter -->
+                <div>
+                    <label class="block text-gray-700 mb-2 font-medium">Specialization</label>
+                    <select id="specializationFilter" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-200 focus:border-primary-500">
+                        <option value="">All Specializations</option>
+                        <option value="Elderly Care">Elderly Care</option>
+                        <option value="Post-Surgery Care">Post-Surgery Care</option>
+                        <option value="Dementia Care">Dementia Care</option>
+                        <option value="Physical Therapy">Physical Therapy</option>
+                        <option value="Palliative Care">Palliative Care</option>
+                        <option value="Medication Management">Medication Management</option>
+                        <option value="Mobility Assistance">Mobility Assistance</option>
+                        <option value="Companionship">Companionship</option>
+                        <option value="Meal Preparation">Meal Preparation</option>
+                        <option value="Nursing Care">Nursing Care</option>
+                        <option value="Geriatric Care">Geriatric Care</option>
+                    </select>
+                </div>
+                
+                <!-- City Filter -->
+                <div>
+                    <label class="block text-gray-700 mb-2 font-medium">City</label>
+                    <input type="text" 
+                           id="cityFilter" 
+                           placeholder="Enter city"
+                           class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-200 focus:border-primary-500">
+                </div>
+                
+                <!-- Experience Filter -->
+                <div>
+                    <label class="block text-gray-700 mb-2 font-medium">Min Experience</label>
+                    <select id="experienceFilter" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-200 focus:border-primary-500">
+                        <option value="0">Any Experience</option>
+                        <option value="1">1+ years</option>
+                        <option value="3">3+ years</option>
+                        <option value="5">5+ years</option>
+                        <option value="10">10+ years</option>
+                    </select>
+                </div>
+                
+                <!-- Hourly Rate Filter -->
+                <div>
+                    <label class="block text-gray-700 mb-2 font-medium">Max Hourly Rate (₹)</label>
+                    <input type="number" 
+                           id="rateFilter" 
+                           placeholder="e.g., 500"
+                           min="0"
+                           class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-200 focus:border-primary-500">
+                </div>
+            </div>
+            
+            <!-- Search Button -->
+            <div class="flex justify-between items-center">
+                <button id="clearFiltersBtn" 
+                        class="px-6 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-all">
+                    Clear Filters
+                </button>
+                <button id="searchBtn" 
+                        class="px-8 py-3 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-xl transition-all flex items-center">
+                    <i class="fas fa-search mr-2"></i>
+                    Search Caregivers
+                </button>
+            </div>
+        </div>
+        
+        <!-- Results Section -->
+        <div class="bg-white rounded-2xl shadow-soft p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold text-gray-800">
+                    Available Caregivers 
+                    <span id="resultsCount" class="text-primary-600 ml-2">(0 found)</span>
+                </h2>
+                <div class="flex items-center space-x-2">
+                    <span class="text-gray-600 text-sm">Sort by:</span>
+                    <select id="sortBy" class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-200 focus:border-primary-500">
+                        <option value="rating">Highest Rating</option>
+                        <option value="experience">Most Experience</option>
+                        <option value="rate">Lowest Rate</option>
+                        <option value="name">Name A-Z</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Caregivers Grid -->
+            <div id="caregiversGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Caregiver cards will be loaded here -->
+                <div class="col-span-full text-center py-12 text-gray-500">
+                    <i class="fas fa-user-nurse text-5xl mb-4 opacity-30"></i>
+                    <h3 class="text-lg font-medium mb-2">No caregivers found</h3>
+                    <p>Use the filters above to find available caregivers</p>
+                </div>
+            </div>
+            
+            <!-- Loading State -->
+            <div id="loadingState" class="hidden">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="bg-gray-50 rounded-2xl p-6">
+                        <div class="skeleton w-20 h-20 rounded-full mx-auto mb-4"></div>
+                        <div class="skeleton h-4 w-3/4 mx-auto mb-2"></div>
+                        <div class="skeleton h-3 w-1/2 mx-auto mb-4"></div>
+                        <div class="skeleton h-3 w-full mb-2"></div>
+                        <div class="skeleton h-3 w-5/6 mb-4"></div>
+                        <div class="skeleton h-10 w-full rounded-xl"></div>
+                    </div>
+                    <!-- Repeat skeleton cards -->
+                </div>
+            </div>
+            
+            <!-- Pagination -->
+            <div id="pagination" class="mt-8 pt-6 border-t border-gray-200 hidden">
+                <div class="flex justify-center space-x-2">
+                    <button id="prevPageBtn" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                        <i class="fas fa-chevron-left"></i> Previous
+                    </button>
+                    <div id="pageNumbers" class="flex space-x-2">
+                        <!-- Page numbers will be added here -->
+                    </div>
+                    <button id="nextPageBtn" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                        Next <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Caregiver Profile Modal - UPDATED VERSION -->
+    <div id="caregiverProfileModal" class="fixed inset-0 bg-black/70 z-50 hidden items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-2xl max-w-4xl w-full p-8 animate-slide-up my-8">
+            <div class="flex justify-between items-start mb-6">
+                <div class="flex items-center space-x-4">
+                    <img id="modalProfileImage" 
+                         src="./images/default-caregiver.png" 
+                         alt="Caregiver"
+                         class="w-20 h-20 rounded-full border-4 border-primary-100">
+                    <div>
+                        <h3 id="modalCaregiverName" class="text-2xl font-bold text-gray-800">Caregiver Name</h3>
+                        <p id="modalCaregiverSpecialization" class="text-primary-600 font-medium">Specialization</p>
+                        <div class="flex items-center mt-2">
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <span id="modalRating" class="ml-2 text-gray-600">4.5 (120 reviews)</span>
+                        </div>
+                    </div>
+                </div>
+                <button id="modalCloseBtn" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Left Column -->
+                <div class="lg:col-span-2 space-y-6">
+                    <!-- About Section -->
+                    <div>
+                        <h4 class="text-lg font-bold text-gray-800 mb-3">About</h4>
+                        <p id="modalAbout" class="text-gray-700">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                    </div>
+                    
+                    <!-- Experience & Skills -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="text-lg font-bold text-gray-800 mb-3">Experience</h4>
+                            <div class="space-y-3">
+                                <div class="flex items-center">
+                                    <i class="fas fa-briefcase text-primary-600 mr-3"></i>
+                                    <div>
+                                        <p class="font-medium" id="modalExperience">5 Years Experience</p>
+                                        <p class="text-gray-600 text-sm" id="modalJobType">Full-time Professional</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-map-marker-alt text-primary-600 mr-3"></i>
+                                    <div>
+                                        <p class="font-medium" id="modalLocation">Mumbai, Maharashtra</p>
+                                        <p class="text-gray-600 text-sm">Serving Area</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h4 class="text-lg font-bold text-gray-800 mb-3">Languages</h4>
+                            <div id="modalLanguages" class="flex flex-wrap gap-2">
+                                <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">English</span>
+                                <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">Hindi</span>
+                                <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">Marathi</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Skills -->
+                    <div>
+                        <h4 class="text-lg font-bold text-gray-800 mb-3">Skills</h4>
+                        <div id="modalSkills" class="flex flex-wrap gap-2">
+                            <!-- Skills will be added here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Availability -->
+                    <div>
+                        <h4 class="text-lg font-bold text-gray-800 mb-3">Availability</h4>
+                        <div id="modalAvailability" class="space-y-2">
+                            <!-- Availability will be added here -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Right Column - Booking Form -->
+                <div class="space-y-6">
+                    <!-- Pricing -->
+                    <div class="bg-primary-50 border border-primary-200 rounded-2xl p-6">
+                        <h4 class="text-lg font-bold text-gray-800 mb-4">Pricing</h4>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-600">Hourly Rate</span>
+                                <span id="modalHourlyRate" class="text-2xl font-bold text-primary-600">₹500</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-600">Daily (8 hours)</span>
+                                <span id="modalDailyRate" class="text-lg font-semibold text-gray-700">₹4,000</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-600">Monthly (26 days)</span>
+                                <span id="modalMonthlyRate" class="text-lg font-semibold text-gray-700">₹1,04,000</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Booking -->
+                    <div class="border border-gray-200 rounded-2xl p-6">
+                        <h4 class="text-lg font-bold text-gray-800 mb-4">Send Booking Request</h4>
+                        <form id="bookingRequestForm" class="space-y-4">
+                            <div>
+                                <label class="block text-gray-700 mb-2">Elder Name</label>
+                                <input type="text" 
+                                       id="elderName"
+                                       required
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-200 focus:border-primary-500">
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-gray-700 mb-2">Elder Age</label>
+                                    <input type="number" 
+                                           id="elderAge"
+                                           min="1" max="120"
+                                           required
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-200 focus:border-primary-500">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 mb-2">Gender</label>
+                                    <select id="elderGender" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-200 focus:border-primary-500">
+                                        <option value="">Select</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-gray-700 mb-2">Care Type</label>
+                                <select id="careType" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-200 focus:border-primary-500">
+                                    <option value="">Select Care Type</option>
+                                    <option value="Hourly Care">Hourly Care</option>
+                                    <option value="Daily Care">Daily Care</option>
+                                    <option value="Overnight Care">Overnight Care</option>
+                                    <option value="24/7 Live-in Care">24/7 Live-in Care</option>
+                                    <option value="Respite Care">Respite Care</option>
+                                </select>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-gray-700 mb-2">Start Date</label>
+                                    <input type="date" 
+                                           id="startDate"
+                                           required
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-200 focus:border-primary-500">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 mb-2">End Date</label>
+                                    <input type="date" 
+                                           id="endDate"
+                                           required
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-200 focus:border-primary-500">
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-gray-700 mb-2">Additional Message (Optional)</label>
+                                <textarea id="bookingMessage" 
+                                          rows="3"
+                                          placeholder="Any special requirements or notes..."
+                                          class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-200 focus:border-primary-500"></textarea>
+                            </div>
+                            
+                            <button type="submit" 
+                                    class="w-full py-3.5 bg-primary-600 hover:bg-primary-700 text-white font-bold rounded-xl transition-all flex items-center justify-center">
+                                <i class="fas fa-paper-plane mr-2"></i>
+                                Send Booking Request
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Booking Confirmation Modal -->
+    <div id="bookingConfirmationModal" class="fixed inset-0 bg-black/70 z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-8 animate-slide-up text-center">
+            <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-check text-green-600 text-3xl"></i>
+            </div>
+            
+            <h3 class="text-2xl font-bold text-gray-800 mb-3">Request Sent Successfully!</h3>
+            <p class="text-gray-600 mb-6">Your booking request has been sent to the caregiver. They will respond within 24 hours.</p>
+            
+            <div class="space-y-4">
+                <div class="p-4 bg-gray-50 rounded-xl">
+                    <p class="text-sm text-gray-600 mb-1">Caregiver</p>
+                    <p id="confirmationCaregiver" class="font-semibold"></p>
+                </div>
+                
+                <div class="p-4 bg-gray-50 rounded-xl">
+                    <p class="text-sm text-gray-600 mb-1">Request ID</p>
+                    <p id="confirmationRequestId" class="font-semibold"></p>
+                </div>
+            </div>
+            
+            <div class="mt-8 pt-6 border-t border-gray-200">
+                <button id="confirmationCloseBtn" 
+                        class="w-full py-3.5 bg-primary-600 hover:bg-primary-700 text-white font-bold rounded-xl transition-all">
+                    Return to Dashboard
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="./src/js/find-caregivers.js"></script>
+</body>
+</html>
