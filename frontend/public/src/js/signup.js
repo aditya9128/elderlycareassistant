@@ -3,7 +3,13 @@
 // ============================================
 
 // API Configuration - IMPORTANT: Use correct backend port
-const API_BASE_URL = 'http://localhost:5000/api';
+// API Configuration
+const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+    ? 'http://localhost:5000/api'
+    : 'https://elderlycare-backend-f853.onrender.com/api';
+
+// OR if your frontend is served from the same domain as backend:
+// const API_BASE_URL = '/api';
 
 // Global state
 let currentStep = 1;
