@@ -156,6 +156,86 @@
         .sidebar-overlay {
             background: rgba(0, 0, 0, 0.5);
         }
+
+        .sidebar-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            width: 100%;
+            padding: 0.7rem 0.8rem;
+            border-radius: 0.75rem;
+            color: rgba(255, 255, 255, 0.88);
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-nav-item:hover,
+        .sidebar-nav-item.active {
+            background: rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+        }
+
+        .sidebar-badge {
+            margin-left: auto;
+            min-width: 1.5rem;
+            height: 1.5rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(14, 165, 233, 0.35);
+            color: #e0f2fe;
+            padding: 0 0.35rem;
+        }
+
+        .quick-action-card {
+            display: block;
+            border-width: 1px;
+            border-radius: 0.9rem;
+            padding: 1rem;
+            min-height: 9.5rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .quick-action-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.09);
+        }
+
+        .quick-action-card h4 {
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+            line-height: 1.3;
+        }
+
+        .quick-action-card p {
+            font-size: 0.875rem;
+            color: #475569;
+            line-height: 1.35;
+        }
+
+        .quick-action-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.75rem;
+        }
+
+        @media (max-width: 767px) {
+            .quick-action-card {
+                min-height: auto;
+            }
+
+            .quick-action-card:active,
+            .sidebar-nav-item:active,
+            button:active {
+                transform: scale(0.98);
+            }
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800 min-h-screen">
@@ -199,7 +279,7 @@
         <nav class="p-4">
             <ul class="space-y-2">
                 <li>
-                    <a href="#" class="sidebar-nav-item active">
+                    <a href="#home" class="sidebar-nav-item active">
                         <i class="fas fa-home"></i>
                         <span>Home</span>
                     </a>
@@ -208,14 +288,14 @@
                     <a href="#appointments" class="sidebar-nav-item">
                         <i class="fas fa-calendar-check"></i>
                         <span>Appointments</span>
-                        <span class="sidebar-badge">3</span>
+                        <span class="sidebar-badge" data-badge="appointments">3</span>
                     </a>
                 </li>
                 <li>
                     <a href="#medicalReminders" class="sidebar-nav-item">
                         <i class="fas fa-bell"></i>
                         <span>Medical Reminders</span>
-                        <span class="sidebar-badge">5</span>
+                        <span class="sidebar-badge" data-badge="reminders">5</span>
                     </a>
                 </li>
                 <li>
@@ -228,7 +308,7 @@
                     <a href="#bookings" class="sidebar-nav-item">
                         <i class="fas fa-clipboard-list"></i>
                         <span>My Bookings</span>
-                        <span class="sidebar-badge">2</span>
+                        <span class="sidebar-badge" data-badge="bookings">2</span>
                     </a>
                 </li>
                 <li>
@@ -281,7 +361,7 @@
     <div id="sidebarOverlay" class="lg:hidden fixed inset-0 bg-black/50 z-30 hidden"></div>
     
     <!-- Main Content -->
-    <main class="lg:ml-64 min-h-screen animate-fade-in">
+    <main id="home" class="lg:ml-64 min-h-screen animate-fade-in">
         <!-- Top Bar -->
         <header class="bg-white shadow-sm sticky top-0 z-30">
             <div class="px-6 py-4">
@@ -323,11 +403,11 @@
         <div class="p-6">
             <!-- Stats Overview -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <div class="bg-white rounded-2xl p-6 shadow-soft hover-lift transition-all">
+                <div class="bg-white rounded-2xl p-6 shadow-soft hover-lift transition-all cursor-pointer" data-stat-card="appointments">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-gray-500 text-sm">Upcoming Appointments</p>
-                            <h3 class="text-3xl font-bold text-gray-800 mt-2">3</h3>
+                            <h3 class="text-3xl font-bold text-gray-800 mt-2" data-stat="appointments">3</h3>
                         </div>
                         <div class="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center">
                             <i class="fas fa-calendar-day text-primary-600 text-xl"></i>
@@ -338,11 +418,11 @@
                     </p>
                 </div>
                 
-                <div class="bg-white rounded-2xl p-6 shadow-soft hover-lift transition-all">
+                <div class="bg-white rounded-2xl p-6 shadow-soft hover-lift transition-all cursor-pointer" data-stat-card="medicalReminders">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-gray-500 text-sm">Active Reminders</p>
-                            <h3 class="text-3xl font-bold text-gray-800 mt-2">5</h3>
+                            <h3 class="text-3xl font-bold text-gray-800 mt-2" data-stat="reminders">5</h3>
                         </div>
                         <div class="w-12 h-12 bg-accent-100 rounded-xl flex items-center justify-center">
                             <i class="fas fa-bell text-accent-600 text-xl"></i>
@@ -353,11 +433,11 @@
                     </p>
                 </div>
                 
-                <div class="bg-white rounded-2xl p-6 shadow-soft hover-lift transition-all">
+                <div class="bg-white rounded-2xl p-6 shadow-soft hover-lift transition-all cursor-pointer" data-stat-card="requests">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-gray-500 text-sm">Caregiver Requests</p>
-                            <h3 class="text-3xl font-bold text-gray-800 mt-2">2</h3>
+                            <h3 class="text-3xl font-bold text-gray-800 mt-2" data-stat="requests">2</h3>
                         </div>
                         <div class="w-12 h-12 bg-secondary-100 rounded-xl flex items-center justify-center">
                             <i class="fas fa-user-nurse text-secondary-600 text-xl"></i>
@@ -368,11 +448,11 @@
                     </p>
                 </div>
                 
-                <div class="bg-white rounded-2xl p-6 shadow-soft hover-lift transition-all">
+                <div class="bg-white rounded-2xl p-6 shadow-soft hover-lift transition-all cursor-pointer" data-stat-card="health">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-gray-500 text-sm">Health Score</p>
-                            <h3 class="text-3xl font-bold text-gray-800 mt-2">85%</h3>
+                            <h3 class="text-3xl font-bold text-gray-800 mt-2" data-stat="health">85%</h3>
                         </div>
                         <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
                             <i class="fas fa-heart text-green-600 text-xl"></i>
@@ -389,14 +469,14 @@
                 <!-- Left Column -->
                 <div class="lg:col-span-2 space-y-6">
                     <!-- Quick Actions Cards -->
-                    <div class="bg-white rounded-2xl shadow-soft p-6">
+                    <div id="bookings" class="bg-white rounded-2xl shadow-soft p-6">
                         <div class="flex justify-between items-center mb-6">
                             <h2 class="text-xl font-bold text-gray-800">Quick Actions</h2>
                             <span class="text-primary-600 text-sm font-medium">Click to navigate</span>
                         </div>
                         
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                            <a href="#myBookings" class="quick-action-card bg-primary-50 border-primary-200">
+                            <a href="#bookings" class="quick-action-card bg-primary-50 border-primary-200">
                                 <div class="quick-action-icon bg-primary-100">
                                     <i class="fas fa-clipboard-check text-primary-600"></i>
                                 </div>
@@ -404,7 +484,7 @@
                                 <p>View all accepted bookings</p>
                             </a>
                             
-                            <a href="#medicalRemindersCard" class="quick-action-card bg-accent-50 border-accent-200">
+                            <a href="#medicalReminders" class="quick-action-card bg-accent-50 border-accent-200">
                                 <div class="quick-action-icon bg-accent-100">
                                     <i class="fas fa-pills text-accent-600"></i>
                                 </div>
@@ -412,7 +492,7 @@
                                 <p>Check/update reminders</p>
                             </a>
                             
-                            <a href="#sentRequests" class="quick-action-card bg-secondary-50 border-secondary-200">
+                            <a href="#requests" class="quick-action-card bg-secondary-50 border-secondary-200">
                                 <div class="quick-action-icon bg-secondary-100">
                                     <i class="fas fa-paper-plane text-secondary-600"></i>
                                 </div>
@@ -436,7 +516,7 @@
                                 <p>Find by specialization</p>
                             </a>
                             
-                            <a href="#settingsCard" class="quick-action-card bg-gray-100 border-gray-300">
+                            <a href="#settings" class="quick-action-card bg-gray-100 border-gray-300">
                                 <div class="quick-action-icon bg-gray-200">
                                     <i class="fas fa-cog text-gray-600"></i>
                                 </div>
@@ -447,7 +527,7 @@
                     </div>
                     
                     <!-- Upcoming Appointments -->
-                    <div class="bg-white rounded-2xl shadow-soft p-6">
+                    <div id="appointments" class="bg-white rounded-2xl shadow-soft p-6">
                         <div class="flex justify-between items-center mb-6">
                             <h2 class="text-xl font-bold text-gray-800">Upcoming Appointments</h2>
                             <a href="#appointments" class="text-primary-600 hover:text-primary-800 font-medium flex items-center">
@@ -455,7 +535,7 @@
                             </a>
                         </div>
                         
-                        <div class="space-y-4">
+                        <div class="space-y-4" data-appointments-list>
                             <!-- Appointment 1 -->
                             <div class="flex items-center p-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all">
                                 <div class="flex-shrink-0 w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center mr-4">
@@ -506,26 +586,26 @@
                 <!-- Right Column -->
                 <div class="space-y-6">
                     <!-- Health Metrics -->
-                    <div class="bg-white rounded-2xl shadow-soft p-6">
+                    <div id="health" class="bg-white rounded-2xl shadow-soft p-6">
                         <h2 class="text-xl font-bold text-gray-800 mb-6">Health Metrics</h2>
                         <div class="space-y-4">
                             <div>
                                 <div class="flex justify-between mb-1">
                                     <span class="text-sm font-medium text-gray-700">Blood Pressure</span>
-                                    <span class="text-sm font-medium text-green-600">Normal</span>
+                                    <span class="text-sm font-medium text-green-600" data-health="bp-status">Normal</span>
                                 </div>
                                 <div class="w-full bg-gray-200 rounded-full h-2">
-                                    <div class="bg-green-600 h-2 rounded-full" style="width: 75%"></div>
+                                    <div class="bg-green-600 h-2 rounded-full" style="width: 75%" data-health="bp-bar"></div>
                                 </div>
                             </div>
                             
                             <div>
                                 <div class="flex justify-between mb-1">
                                     <span class="text-sm font-medium text-gray-700">Blood Sugar</span>
-                                    <span class="text-sm font-medium text-yellow-600">Monitor</span>
+                                    <span class="text-sm font-medium text-yellow-600" data-health="sugar-status">Monitor</span>
                                 </div>
                                 <div class="w-full bg-gray-200 rounded-full h-2">
-                                    <div class="bg-yellow-500 h-2 rounded-full" style="width: 60%"></div>
+                                    <div class="bg-yellow-500 h-2 rounded-full" style="width: 60%" data-health="sugar-bar"></div>
                                 </div>
                             </div>
                             
@@ -541,7 +621,7 @@
                         </div>
                         
                         <div class="mt-6 pt-6 border-t border-gray-200">
-                            <button class="w-full py-3 bg-primary-50 hover:bg-primary-100 text-primary-700 font-medium rounded-xl transition-all flex items-center justify-center">
+                            <button data-action="add-health" class="w-full py-3 bg-primary-50 hover:bg-primary-100 text-primary-700 font-medium rounded-xl transition-all flex items-center justify-center">
                                 <i class="fas fa-plus mr-2"></i>
                                 Add Health Reading
                             </button>
@@ -549,7 +629,7 @@
                     </div>
                     
                     <!-- Today's Reminders -->
-                    <div class="bg-white rounded-2xl shadow-soft p-6">
+                    <div id="medicalReminders" class="bg-white rounded-2xl shadow-soft p-6">
                         <div class="flex justify-between items-center mb-6">
                             <h2 class="text-xl font-bold text-gray-800">Today's Reminders</h2>
                             <span class="text-red-500 animate-pulse-slow">
@@ -557,7 +637,7 @@
                             </span>
                         </div>
                         
-                        <div class="space-y-3">
+                        <div class="space-y-3" data-reminders-list>
                             <div class="flex items-center p-3 bg-red-50 border border-red-100 rounded-xl">
                                 <div class="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center mr-3">
                                     <i class="fas fa-pills text-red-600"></i>
@@ -593,7 +673,7 @@
                         </div>
                         
                         <div class="mt-6 pt-6 border-t border-gray-200">
-                            <a href="#medicalReminders" class="w-full py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl transition-all flex items-center justify-center">
+                            <a href="#medicalReminders" data-action="view-reminders" class="w-full py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl transition-all flex items-center justify-center">
                                 <i class="fas fa-bell mr-2"></i>
                                 View All Reminders
                             </a>
@@ -601,7 +681,7 @@
                     </div>
                     
                     <!-- Emergency Contacts -->
-                    <div class="bg-gradient-to-r from-red-500 to-red-600 rounded-2xl p-6 text-white">
+                    <div id="hospitals" class="bg-gradient-to-r from-red-500 to-red-600 rounded-2xl p-6 text-white">
                         <div class="flex items-center mb-4">
                             <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center mr-3">
                                 <i class="fas fa-phone-alt"></i>
@@ -622,10 +702,10 @@
                             
                             <div class="flex items-center justify-between p-3 bg-white/10 rounded-xl">
                                 <div>
-                                    <p class="font-semibold">Primary Caregiver</p>
-                                    <p class="text-white/80 text-sm">Ramesh Mali</p>
+                                    <p class="font-semibold" data-primary-contact-name>Primary Caregiver</p>
+                                    <p class="text-white/80 text-sm" data-primary-contact-phone>Ramesh Mali</p>
                                 </div>
-                                <a href="tel:+919876543210" class="bg-white text-red-600 px-4 py-1 rounded-lg font-bold hover:bg-gray-100 transition-all">
+                                <a href="tel:+919876543210" data-primary-contact-call class="bg-white text-red-600 px-4 py-1 rounded-lg font-bold hover:bg-gray-100 transition-all">
                                     Call
                                 </a>
                             </div>
@@ -635,7 +715,7 @@
             </div>
             
             <!-- Recent Activity -->
-            <div class="bg-white rounded-2xl shadow-soft p-6 mt-6">
+            <div id="requests" class="bg-white rounded-2xl shadow-soft p-6 mt-6">
                 <h2 class="text-xl font-bold text-gray-800 mb-6">Recent Activity</h2>
                 <div class="overflow-x-auto">
                     <table class="w-full">
@@ -647,7 +727,7 @@
                                 <th class="text-left py-3 text-gray-600 font-medium">Action</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody data-activity-body>
                             <tr class="border-b border-gray-100 hover:bg-gray-50">
                                 <td class="py-4">
                                     <div class="flex items-center">
@@ -700,6 +780,7 @@
                     </table>
                 </div>
             </div>
+            <div id="settings" class="h-1"></div>
         </div>
     </main>
     
