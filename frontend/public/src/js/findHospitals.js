@@ -1,4 +1,8 @@
 // hospitalSearch.js - Hospital search functionality for index.html
+
+// API Configuration
+const API_BASE_URL = 'http://localhost:5000/api';
+
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🏥 Hospital search initializing...');
     
@@ -62,7 +66,7 @@ async function searchHospitals() {
         `;
         
         // Call API
-        const response = await fetch(`/api/hospitals/nearby?pincode=${pincode}`);
+        const response = await fetch(`${API_BASE_URL}/hospitals/nearby?pincode=${pincode}`);
         
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);

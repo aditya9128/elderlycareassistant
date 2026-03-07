@@ -107,6 +107,26 @@
         .transition-all {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
+        
+        /* Navigation link styles */
+        .nav-link {
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #bae6fd;
+        }
+        
+        .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800 antialiased">
@@ -730,41 +750,5 @@
     <script src="./src/js/main.js"></script>
     <script src="./src/js/findHospitals.js"></script>
     <script src="./src/js/caregiverSearch.js"></script>
-    
-    <!-- Mobile Menu Script -->
-    <script>
-        document.getElementById('mobile-menu-button').addEventListener('click', function() {
-            const navLinks = document.getElementById('nav-links');
-            navLinks.classList.toggle('hidden');
-            navLinks.classList.toggle('flex');
-            navLinks.classList.toggle('flex-col');
-            navLinks.classList.toggle('absolute');
-            navLinks.classList.toggle('top-full');
-            navLinks.classList.toggle('left-0');
-            navLinks.classList.toggle('right-0');
-            navLinks.classList.toggle('bg-gradient-to-r');
-            navLinks.classList.toggle('from-primary-600');
-            navLinks.classList.toggle('to-primary-800');
-            navLinks.classList.toggle('py-4');
-            navLinks.classList.toggle('px-4');
-            navLinks.classList.toggle('space-y-4');
-            navLinks.classList.toggle('z-40');
-        });
-
-        // Close mobile menu when clicking outside
-        document.addEventListener('click', function(event) {
-            const navLinks = document.getElementById('nav-links');
-            const mobileMenuBtn = document.getElementById('mobile-menu-button');
-            
-            if (!navLinks.classList.contains('hidden') && 
-                !navLinks.contains(event.target) && 
-                !mobileMenuBtn.contains(event.target)) {
-                navLinks.classList.add('hidden');
-                navLinks.classList.remove('flex', 'flex-col', 'absolute', 'top-full', 
-                    'left-0', 'right-0', 'bg-gradient-to-r', 'from-primary-600', 
-                    'to-primary-800', 'py-4', 'px-4', 'space-y-4', 'z-40');
-            }
-        });
-    </script>
 </body>
 </html>
