@@ -15,12 +15,15 @@ class BookingController {
                 elderGender,
                 cgSpecialization,
                 careType,
+                serviceType, // Accept both careType and serviceType
                 startDate,
                 endDate,
                 startTime,
                 endTime,
                 location,
+                address,
                 message,
+                notes, // Accept both message and notes
                 urgency,
                 servicesRequired
             } = req.body;
@@ -37,9 +40,18 @@ class BookingController {
             // Check if caregiver is busy
             if (caregiver.isBusy) {
                 return res.status(400).json({
-                    success: true,
+                    success: false,
                     message: 'Caregiver is currently busy',
                     nextAvailable: caregiver.nextAvailableDate
+                });
+            }
+            
+            // Get user details for contact info
+            const user = await User.findById(userId);
+            if (!user) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'User not found'
                 });
             }
             
@@ -47,7 +59,7 @@ class BookingController {
             const parsedStartDate = new Date(startDate);
             const parsedEndDate = new Date(endDate);
             
-            // Check for time conflicts
+            // Check for time conflicts (only for confirmed/active bookings)
             const conflictingBooking = await Booking.findOne({
                 caregiverId: caregiverId,
                 status: { $in: ['Confirmed', 'Active'] },
@@ -66,35 +78,47 @@ class BookingController {
                 });
             }
             
+            // Determine care type (accept both careType and serviceType)
+            const finalCareType = careType || serviceType || 'Daily Care';
+            
+            // Determine specialization (from request or caregiver's primary specialization)
+            const finalSpecialization = cgSpecialization || 
+                (Array.isArray(caregiver.cgSpecialization) ? caregiver.cgSpecialization[0] : caregiver.cgSpecialization) || 
+                'Elderly Care';
+            
+            // Build location object
+            const locationData = {
+                address: (typeof location === 'object' ? location.address : location) || address || user.UAddress || 'Not specified',
+                city: (typeof location === 'object' ? location.city : null) || user.UCity || 'Not specified',
+                state: (typeof location === 'object' ? location.state : null) || user.UState || 'Not specified',
+                pincode: (typeof location === 'object' ? location.pincode : null) || user.UPincode || '000000'
+            };
+            
             // Create booking
             const bookingData = {
                 userId,
                 caregiverId,
                 elderName,
-                elderAge,
+                elderAge: parseInt(elderAge),
                 elderGender,
-                cgSpecialization,
-                careType,
+                cgSpecialization: finalSpecialization,
+                careType: finalCareType,
                 startDate: parsedStartDate,
                 endDate: parsedEndDate,
-                startTime,
-                endTime,
-                location: {
-                    address: location.address || location,
-                    city: location.city || req.user.UCity,
-                    state: location.state || req.user.UState,
-                    pincode: location.pincode || req.user.UPincode
-                },
+                startTime: startTime || '09:00',
+                endTime: endTime || '17:00',
+                location: locationData,
                 contactPerson: {
-                    name: req.user.UName,
-                    phone: req.user.UPhone,
+                    name: user.UName || 'Not specified',
+                    phone: user.UPhone || 'Not specified',
                     relationship: 'Self'
                 },
-                message,
+                message: message || notes || '',
                 urgency: urgency || 'Normal',
                 servicesRequired: servicesRequired || [],
+                status: 'Pending', // Explicitly set status to Pending
                 payment: {
-                    hourlyRate: caregiver.cgCharges.hourly
+                    hourlyRate: caregiver.cgCharges?.hourly || 0
                 }
             };
             
@@ -116,6 +140,7 @@ class BookingController {
                 data: populatedBooking
             });
         } catch (error) {
+            console.error('Booking creation error:', error);
             res.status(400).json({
                 success: false,
                 message: error.message

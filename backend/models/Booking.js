@@ -46,7 +46,7 @@ const bookingSchema = new mongoose.Schema({
     // ========== SERVICE DETAILS ==========
     cgSpecialization: {
         type: String,
-        required: [true, 'Specialization is required'],
+        default: 'Elderly Care',
         enum: [
             'Elderly Care',
             'Post-Surgery Care',
@@ -104,36 +104,22 @@ const bookingSchema = new mongoose.Schema({
 
     startDate: { 
         type: Date, 
-        required: [true, 'Start date is required'],
-        validate: {
-            validator: function(value) {
-                return value >= new Date();
-            },
-            message: 'Start date cannot be in the past'
-        }
+        required: [true, 'Start date is required']
     },
 
     endDate: { 
         type: Date, 
-        required: [true, 'End date is required'],
-        validate: {
-            validator: function(value) {
-                return value > this.startDate;
-            },
-            message: 'End date must be after start date'
-        }
+        required: [true, 'End date is required']
     },
 
     startTime: {
         type: String,
-        required: [true, 'Start time is required'],
-        match: [/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, 'Please provide valid time in HH:MM format']
+        default: '09:00'
     },
 
     endTime: {
         type: String,
-        required: [true, 'End time is required'],
-        match: [/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, 'Please provide valid time in HH:MM format']
+        default: '17:00'
     },
 
     recurring: {
@@ -160,20 +146,19 @@ const bookingSchema = new mongoose.Schema({
     location: {
         address: {
             type: String,
-            required: [true, 'Address is required']
+            default: 'Not specified'
         },
         city: {
             type: String,
-            required: [true, 'City is required']
+            default: 'Not specified'
         },
         state: {
             type: String,
-            required: [true, 'State is required']
+            default: 'Not specified'
         },
         pincode: {
             type: String,
-            required: [true, 'Pincode is required'],
-            match: [/^\d{6}$/, 'Please provide a valid 6-digit pincode']
+            default: '000000'
         },
         landmark: String,
         latitude: Number,
@@ -183,16 +168,16 @@ const bookingSchema = new mongoose.Schema({
     contactPerson: {
         name: {
             type: String,
-            required: [true, 'Contact person name is required']
+            default: 'Not specified'
         },
         phone: {
             type: String,
-            required: [true, 'Contact phone is required']
+            default: 'Not specified'
         },
         relationship: {
             type: String,
             enum: ['Self', 'Spouse', 'Child', 'Sibling', 'Friend', 'Other'],
-            required: true
+            default: 'Self'
         }
     },
 
@@ -218,7 +203,7 @@ const bookingSchema = new mongoose.Schema({
     payment: {
         hourlyRate: {
             type: Number,
-            required: [true, 'Hourly rate is required'],
+            default: 0,
             min: [0, 'Hourly rate cannot be negative']
         },
         totalAmount: {
@@ -253,6 +238,7 @@ const bookingSchema = new mongoose.Schema({
             'Pending',      // Sent to caregiver, waiting for response
             'Accepted',     // Caregiver accepted
             'Rejected',     // Caregiver rejected
+            'Declined',     // Caregiver declined
             'Confirmed',    // Payment made, booking confirmed
             'Active',       // Service in progress
             'Completed',    // Service completed successfully
@@ -260,7 +246,7 @@ const bookingSchema = new mongoose.Schema({
             'No Show',      // Caregiver didn't show up
             'Disputed'      // Issue raised
         ], 
-        default: 'Draft'
+        default: 'Pending'
     },
 
     statusHistory: [{

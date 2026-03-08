@@ -54,27 +54,41 @@ class CaregiverController {
             const requests = await Booking.find({
                 caregiverId: req.user.id,
                 status: 'Pending'
-            }).populate('userId', 'UName UEmail UPhone UDob UGender UCity');
+            }).populate('userId', 'UName UEmail UPhone UDob UGender UCity UAddress').sort({ createdAt: -1 });
             
-            const formattedRequests = requests.map(request => ({
-                _id: request._id,
-                patient: {
-                    _id: request.userId._id,
-                    UName: request.userId.UName,
-                    UEmail: request.userId.UEmail,
-                    UPhone: request.userId.UPhone,
-                    age: request.userId.age,
-                    UCity: request.userId.UCity
-                },
-                serviceType: request.serviceType,
-                duration: request.duration,
-                startDate: request.startDate,
-                endDate: request.endDate,
-                budget: request.budget,
-                notes: request.notes,
-                createdAt: request.createdAt,
-                status: request.status
-            }));
+            const formattedRequests = requests.map(request => {
+                // Calculate duration in days
+                const startDate = new Date(request.startDate);
+                const endDate = new Date(request.endDate);
+                const diffTime = Math.abs(endDate - startDate);
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+                
+                return {
+                    _id: request._id,
+                    patient: {
+                        _id: request.userId?._id,
+                        name: request.userId?.UName || 'Unknown',
+                        email: request.userId?.UEmail,
+                        phone: request.userId?.UPhone,
+                        city: request.userId?.UCity
+                    },
+                    elderName: request.elderName,
+                    elderAge: request.elderAge,
+                    elderGender: request.elderGender,
+                    careType: request.careType,
+                    specialization: request.cgSpecialization,
+                    duration: diffDays,
+                    startDate: request.startDate,
+                    endDate: request.endDate,
+                    startTime: request.startTime,
+                    endTime: request.endTime,
+                    location: request.location,
+                    message: request.message,
+                    urgency: request.urgency,
+                    createdAt: request.createdAt,
+                    status: request.status
+                };
+            });
             
             res.status(200).json({
                 success: true,
@@ -82,6 +96,7 @@ class CaregiverController {
                 data: formattedRequests
             });
         } catch (error) {
+            console.error('Error getting pending requests:', error);
             res.status(500).json({
                 success: false,
                 message: error.message
