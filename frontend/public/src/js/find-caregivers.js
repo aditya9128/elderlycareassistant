@@ -840,31 +840,47 @@ function populateCaregiverModal() {
 async function submitBookingRequest() {
     try {
         // Validate form
-        const elderName = document.getElementById('elderName').value;
+        const elderName = document.getElementById('elderName').value.trim();
         const elderAge = document.getElementById('elderAge').value;
         const elderGender = document.getElementById('elderGender').value;
         const careType = document.getElementById('careType').value;
         const startDate = document.getElementById('startDate').value;
         const endDate = document.getElementById('endDate').value;
+        const careAddress = document.getElementById('careAddress')?.value.trim() || '';
+        const bookingMessage = document.getElementById('bookingMessage')?.value.trim() || '';
         
         if (!elderName || !elderAge || !elderGender || !careType || !startDate || !endDate) {
             showNotification('Please fill all required fields', 'error');
             return;
         }
         
+        // Validate dates
+        if (new Date(endDate) < new Date(startDate)) {
+            showNotification('End date must be after start date', 'error');
+            return;
+        }
+        
+        // Disable submit button to prevent double submission
+        const submitBtn = document.querySelector('#bookingRequestForm button[type="submit"]');
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Sending...';
+        }
+        
         const bookingData = {
             caregiverId: selectedCaregiver._id,
-            serviceType: careType,
+            careType: careType,
             startDate: startDate,
             endDate: endDate,
             elderName: elderName,
             elderAge: parseInt(elderAge),
             elderGender: elderGender,
-            notes: document.getElementById('bookingMessage').value,
-            duration: calculateDuration(startDate, endDate)
+            address: careAddress,
+            message: bookingMessage,
+            cgSpecialization: selectedCaregiver.cgSpecialization?.[0] || selectedCaregiver.cgSpecialization || 'Elderly Care'
         };
         
-        console.log('Submitting booking:', bookingData);
+        console.log('📤 Submitting booking request:', bookingData);
         
         const response = await fetch(`${API_BASE_URL}/bookings`, {
             method: 'POST',
@@ -876,22 +892,40 @@ async function submitBookingRequest() {
         });
         
         const data = await response.json();
+        console.log('📥 Booking response:', data);
+        
+        // Re-enable submit button
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i>Send Booking Request';
+        }
         
         if (data.success) {
             hideModal('caregiverProfileModal');
             
+            // Clear the form
+            document.getElementById('bookingRequestForm').reset();
+            
             // Update confirmation modal
             document.getElementById('confirmationCaregiver').textContent = selectedCaregiver.cgName;
-            document.getElementById('confirmationRequestId').textContent = data.data._id || data.data.bookingId;
+            document.getElementById('confirmationRequestId').textContent = data.data._id || data.data.bookingId || 'Pending';
             
             showModal('bookingConfirmationModal');
+            showNotification('Booking request sent successfully!', 'success');
         } else {
             showNotification(data.message || 'Failed to submit booking request', 'error');
         }
         
     } catch (error) {
-        console.error('Error submitting booking:', error);
-        showNotification('Error submitting booking request', 'error');
+        console.error('❌ Error submitting booking:', error);
+        showNotification('Error submitting booking request. Please try again.', 'error');
+        
+        // Re-enable submit button on error
+        const submitBtn = document.querySelector('#bookingRequestForm button[type="submit"]');
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i>Send Booking Request';
+        }
     }
 }
 

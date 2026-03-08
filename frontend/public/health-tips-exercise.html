@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise Tips | ElderlyCare Assistant</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                        },
+                        exercise: {
+                            50: '#fef3c7',
+                            100: '#fde68a',
+                            200: '#fcd34d',
+                            300: '#fbbf24',
+                            400: '#f59e0b',
+                            500: '#d97706',
+                            600: '#b45309',
+                            700: '#92400e',
+                        }
+                    },
+                    fontFamily: {
+                        'poppins': ['Poppins', 'sans-serif'],
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                    animation: {
+                        'bounce-slow': 'bounce 2s infinite',
+                        'float': 'float 3s ease-in-out infinite',
+                        'fade-in-up': 'fadeInUp 0.6s ease-out forwards',
+                        'run': 'run 0.5s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(30px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        run: {
+                            '0%, 100%': { transform: 'translateX(0)' },
+                            '50%': { transform: 'translateX(5px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Poppins', sans-serif; }
+        .tip-card { opacity: 0; animation: fadeInUp 0.6s ease-out forwards; }
+        .tip-card:nth-child(1) { animation-delay: 0.1s; }
+        .tip-card:nth-child(2) { animation-delay: 0.2s; }
+        .tip-card:nth-child(3) { animation-delay: 0.3s; }
+        .tip-card:nth-child(4) { animation-delay: 0.4s; }
+        .tip-card:nth-child(5) { animation-delay: 0.5s; }
+        .tip-card:nth-child(6) { animation-delay: 0.6s; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-exercise-50 via-white to-orange-100 min-h-screen">
+    <!-- Hero Section -->
+    <div class="relative overflow-hidden bg-gradient-to-r from-exercise-400 via-exercise-500 to-exercise-600 text-white">
+        <!-- Background Pattern -->
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute top-10 left-10 text-9xl"><i class="fas fa-running"></i></div>
+            <div class="absolute bottom-10 right-10 text-9xl"><i class="fas fa-dumbbell"></i></div>
+            <div class="absolute top-1/2 left-1/3 text-6xl"><i class="fas fa-bicycle"></i></div>
+        </div>
+        
+        <div class="container mx-auto px-6 py-16 relative z-10">
+            <a href="dashboard.html" class="inline-flex items-center text-white/80 hover:text-white mb-8 transition-all">
+                <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard
+            </a>
+            
+            <div class="flex flex-col md:flex-row items-center justify-between">
+                <div class="md:w-1/2 mb-8 md:mb-0">
+                    <h1 class="text-4xl md:text-5xl font-bold mb-4">
+                        Exercise Tips
+                    </h1>
+                    <p class="text-xl text-white/90 mb-6">
+                        Safe and effective exercises to keep you active, strong, and independent.
+                    </p>
+                    <div class="flex items-center space-x-4">
+                        <div class="bg-white/20 backdrop-blur-sm rounded-xl px-4 py-2">
+                            <i class="fas fa-clock mr-2"></i> 5 min read
+                        </div>
+                        <div class="bg-white/20 backdrop-blur-sm rounded-xl px-4 py-2">
+                            <i class="fas fa-bolt mr-2"></i> Stay Active
+                        </div>
+                    </div>
+                </div>
+                <div class="md:w-1/3">
+                    <div class="w-48 h-48 mx-auto bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center animate-float">
+                        <i class="fas fa-person-walking text-8xl text-white drop-shadow-lg animate-run"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Wave SVG -->
+        <svg class="absolute bottom-0 w-full" viewBox="0 0 1440 120" fill="none">
+            <path d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z" fill="white" fill-opacity="0.1"/>
+            <path d="M0,96L80,90.7C160,85,320,75,480,80C640,85,800,107,960,112C1120,117,1280,107,1360,101.3L1440,96L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z" fill="white"/>
+        </svg>
+    </div>
+    
+    <!-- Tips Content -->
+    <div class="container mx-auto px-6 py-12">
+        <!-- Weekly Exercise Goals -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+            <div class="bg-white rounded-2xl p-6 shadow-lg text-center hover:shadow-xl transition-all hover:-translate-y-1">
+                <div class="text-3xl font-bold text-exercise-500">150</div>
+                <div class="text-gray-600 text-sm">Min Cardio/Week</div>
+            </div>
+            <div class="bg-white rounded-2xl p-6 shadow-lg text-center hover:shadow-xl transition-all hover:-translate-y-1">
+                <div class="text-3xl font-bold text-exercise-500">2-3</div>
+                <div class="text-gray-600 text-sm">Strength Sessions</div>
+            </div>
+            <div class="bg-white rounded-2xl p-6 shadow-lg text-center hover:shadow-xl transition-all hover:-translate-y-1">
+                <div class="text-3xl font-bold text-exercise-500">Daily</div>
+                <div class="text-gray-600 text-sm">Balance Practice</div>
+            </div>
+            <div class="bg-white rounded-2xl p-6 shadow-lg text-center hover:shadow-xl transition-all hover:-translate-y-1">
+                <div class="text-3xl font-bold text-exercise-500">10-15</div>
+                <div class="text-gray-600 text-sm">Min Stretching</div>
+            </div>
+        </div>
+        
+        <!-- Tips Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Tip 1 -->
+            <div class="tip-card bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all hover:-translate-y-2">
+                <div class="h-3 bg-gradient-to-r from-exercise-300 to-exercise-500"></div>
+                <div class="p-6">
+                    <div class="w-14 h-14 bg-exercise-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-walking text-exercise-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Daily Walking</h3>
+                    <p class="text-gray-600 mb-4">
+                        Walking is the perfect low-impact exercise. Start with 10-15 minutes and gradually increase.
+                    </p>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li class="flex items-center"><i class="fas fa-check text-exercise-500 mr-2"></i> Wear supportive shoes</li>
+                        <li class="flex items-center"><i class="fas fa-check text-exercise-500 mr-2"></i> Use walking stick if needed</li>
+                        <li class="flex items-center"><i class="fas fa-check text-exercise-500 mr-2"></i> Walk with a buddy</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Tip 2 -->
+            <div class="tip-card bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all hover:-translate-y-2">
+                <div class="h-3 bg-gradient-to-r from-exercise-300 to-exercise-500"></div>
+                <div class="p-6">
+                    <div class="w-14 h-14 bg-exercise-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-chair text-exercise-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Chair Exercises</h3>
+                    <p class="text-gray-600 mb-4">
+                        Great for those with limited mobility. Strengthen muscles while staying safely seated.
+                    </p>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li class="flex items-center"><i class="fas fa-check text-exercise-500 mr-2"></i> Seated leg raises</li>
+                        <li class="flex items-center"><i class="fas fa-check text-exercise-500 mr-2"></i> Arm circles</li>
+                        <li class="flex items-center"><i class="fas fa-check text-exercise-500 mr-2"></i> Seated marching</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Tip 3 -->
+            <div class="tip-card bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all hover:-translate-y-2">
+                <div class="h-3 bg-gradient-to-r from-exercise-300 to-exercise-500"></div>
+                <div class="p-6">
+                    <div class="w-14 h-14 bg-exercise-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-balance-scale text-exercise-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Balance Training</h3>
+                    <p class="text-gray-600 mb-4">
+                        Prevent falls with daily balance exercises. Hold onto a sturdy surface when starting.
+                    </p>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li class="flex items-center"><i class="fas fa-check text-exercise-500 mr-2"></i> Single-leg stands</li>
+                        <li class="flex items-center"><i class="fas fa-check text-exercise-500 mr-2"></i> Heel-to-toe walking</li>
+                        <li class="flex items-center"><i class="fas fa-check text-exercise-500 mr-2"></i> Side leg raises</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Tip 4 -->
+            <div class="tip-card bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all hover:-translate-y-2">
+                <div class="h-3 bg-gradient-to-r from-exercise-300 to-exercise-500"></div>
+                <div class="p-6">
+                    <div class="w-14 h-14 bg-exercise-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-child text-exercise-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Stretching & Flexibility</h3>
+                    <p class="text-gray-600 mb-4">
+                        Keep your joints flexible and reduce stiffness with gentle daily stretching routines.
+                    </p>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li class="flex items-center"><i class="fas fa-check text-exercise-500 mr-2"></i> Neck rolls</li>
+                        <li class="flex items-center"><i class="fas fa-check text-exercise-500 mr-2"></i> Shoulder stretches</li>
+                        <li class="flex items-center"><i class="fas fa-check text-exercise-500 mr-2"></i> Ankle rotations</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Tip 5 -->
+            <div class="tip-card bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all hover:-translate-y-2">
+                <div class="h-3 bg-gradient-to-r from-exercise-300 to-exercise-500"></div>
+                <div class="p-6">
+                    <div class="w-14 h-14 bg-exercise-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-water text-exercise-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Water Exercises</h3>
+                    <p class="text-gray-600 mb-4">
+                        Swimming and water aerobics are gentle on joints while providing excellent resistance training.
+                    </p>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li class="flex items-center"><i class="fas fa-check text-exercise-500 mr-2"></i> Water walking</li>
+                        <li class="flex items-center"><i class="fas fa-check text-exercise-500 mr-2"></i> Aqua aerobics classes</li>
+                        <li class="flex items-center"><i class="fas fa-check text-exercise-500 mr-2"></i> Pool noodle exercises</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Tip 6 -->
+            <div class="tip-card bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all hover:-translate-y-2">
+                <div class="h-3 bg-gradient-to-r from-exercise-300 to-exercise-500"></div>
+                <div class="p-6">
+                    <div class="w-14 h-14 bg-exercise-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-spa text-exercise-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Gentle Yoga & Tai Chi</h3>
+                    <p class="text-gray-600 mb-4">
+                        Mind-body exercises that improve balance, flexibility, and mental well-being.
+                    </p>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li class="flex items-center"><i class="fas fa-check text-exercise-500 mr-2"></i> Chair yoga</li>
+                        <li class="flex items-center"><i class="fas fa-check text-exercise-500 mr-2"></i> Slow Tai Chi movements</li>
+                        <li class="flex items-center"><i class="fas fa-check text-exercise-500 mr-2"></i> Breathing exercises</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Safety Tips Section -->
+        <div class="mt-12 bg-gradient-to-r from-exercise-400 to-exercise-600 rounded-2xl p-8 text-white">
+            <div class="flex items-center mb-6">
+                <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mr-4">
+                    <i class="fas fa-shield-alt text-2xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold">Safety First - Exercise Guidelines</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4">
+                    <i class="fas fa-user-md text-2xl mb-2"></i>
+                    <p class="font-semibold">Consult Your Doctor</p>
+                    <p class="text-sm text-white/70">Before starting any new routine</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4">
+                    <i class="fas fa-glass-water text-2xl mb-2"></i>
+                    <p class="font-semibold">Stay Hydrated</p>
+                    <p class="text-sm text-white/70">Drink water before & after</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4">
+                    <i class="fas fa-shoe-prints text-2xl mb-2"></i>
+                    <p class="font-semibold">Proper Footwear</p>
+                    <p class="text-sm text-white/70">Non-slip, supportive shoes</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4">
+                    <i class="fas fa-hand-paper text-2xl mb-2"></i>
+                    <p class="font-semibold">Listen to Your Body</p>
+                    <p class="text-sm text-white/70">Stop if you feel pain</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sample Weekly Routine -->
+        <div class="mt-12 bg-white rounded-2xl shadow-lg p-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                <i class="fas fa-calendar-week text-exercise-500 mr-3"></i>
+                Sample Weekly Routine
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-7 gap-3">
+                <div class="text-center p-4 bg-exercise-50 rounded-xl">
+                    <p class="font-bold text-exercise-600">Mon</p>
+                    <p class="text-sm text-gray-600 mt-2">30 min walk</p>
+                </div>
+                <div class="text-center p-4 bg-exercise-50 rounded-xl">
+                    <p class="font-bold text-exercise-600">Tue</p>
+                    <p class="text-sm text-gray-600 mt-2">Chair exercises</p>
+                </div>
+                <div class="text-center p-4 bg-exercise-50 rounded-xl">
+                    <p class="font-bold text-exercise-600">Wed</p>
+                    <p class="text-sm text-gray-600 mt-2">Gentle yoga</p>
+                </div>
+                <div class="text-center p-4 bg-exercise-50 rounded-xl">
+                    <p class="font-bold text-exercise-600">Thu</p>
+                    <p class="text-sm text-gray-600 mt-2">30 min walk</p>
+                </div>
+                <div class="text-center p-4 bg-exercise-50 rounded-xl">
+                    <p class="font-bold text-exercise-600">Fri</p>
+                    <p class="text-sm text-gray-600 mt-2">Balance training</p>
+                </div>
+                <div class="text-center p-4 bg-exercise-50 rounded-xl">
+                    <p class="font-bold text-exercise-600">Sat</p>
+                    <p class="text-sm text-gray-600 mt-2">Water aerobics</p>
+                </div>
+                <div class="text-center p-4 bg-gray-100 rounded-xl">
+                    <p class="font-bold text-gray-600">Sun</p>
+                    <p class="text-sm text-gray-600 mt-2">Rest & stretch</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Back to Dashboard -->
+        <div class="mt-12 text-center">
+            <a href="dashboard.html" class="inline-flex items-center px-8 py-4 bg-exercise-500 text-white rounded-xl font-semibold hover:bg-exercise-600 transition-all shadow-lg hover:shadow-xl">
+                <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-8 mt-12">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-gray-400">© 2026 ElderlyCare Assistant. Always consult your healthcare provider before starting any exercise program.</p>
+        </div>
+    </footer>
+</body>
+</html>

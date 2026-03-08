@@ -149,6 +149,9 @@ function renderDashboard(data) {
   updateHealthMetrics(data?.healthMetrics || {});
   updateRecentActivity(data?.recentActivity || []);
   updateEmergencyContacts(data?.emergencyContacts || []);
+  
+  // Load bookings from the dedicated bookings endpoint
+  loadUserBookings();
 }
 
 function updateStats(stats) {
@@ -745,3 +748,146 @@ window.dashboardDebug = {
   getData: () => dashboardData,
   refresh: () => loadDashboardData()
 };
+
+// ========== BOOKING REQUESTS FUNCTIONALITY ==========
+
+// Load user's booking requests
+async function loadUserBookings() {
+  try {
+    const response = await fetch(`${API_BASE_URL}/bookings`, {
+      method: 'GET',
+      credentials: 'include'
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Failed to fetch bookings (${response.status})`);
+    }
+    
+    const data = await response.json();
+    
+    if (data.success) {
+      updateBookingsSection(data.data || []);
+      updateSentRequestsSection(data.data || []);
+    }
+  } catch (error) {
+    console.error('Error loading bookings:', error);
+  }
+}
+
+// Update the My Bookings section (confirmed/active bookings)
+function updateBookingsSection(bookings) {
+  const container = document.querySelector('[data-bookings-list]');
+  if (!container) return;
+  
+  const confirmedBookings = bookings.filter(b => 
+    ['Confirmed', 'Active'].includes(b.status)
+  );
+  
+  if (!confirmedBookings.length) {
+    container.innerHTML = `
+      <div class="text-center py-8 text-gray-500">
+        <i class="fas fa-calendar-check text-4xl mb-3 opacity-30"></i>
+        <p>No active bookings</p>
+        <a href="find-caregivers.html" class="mt-3 inline-block text-primary-600 hover:text-primary-800 font-medium">
+          Find a Caregiver <i class="fas fa-arrow-right ml-1"></i>
+        </a>
+      </div>
+    `;
+    return;
+  }
+  
+  container.innerHTML = confirmedBookings.map(booking => `
+    <div class="flex items-center p-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all">
+      <div class="flex-shrink-0 w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mr-4">
+        <i class="fas fa-user-nurse text-green-600"></i>
+      </div>
+      <div class="flex-1">
+        <h4 class="font-semibold text-gray-800">${booking.caregiverId?.cgName || 'Caregiver'}</h4>
+        <p class="text-gray-600 text-sm">${booking.careType || 'Care Service'}</p>
+        <div class="flex items-center mt-1">
+          <i class="fas fa-calendar text-gray-400 text-sm mr-2"></i>
+          <span class="text-gray-700 text-sm">${new Date(booking.startDate).toLocaleDateString()}</span>
+        </div>
+      </div>
+      <span class="px-3 py-1 ${booking.status === 'Active' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'} rounded-full text-xs font-medium">
+        ${booking.status}
+      </span>
+    </div>
+  `).join('');
+}
+
+// Update Sent Requests section (pending bookings)
+function updateSentRequestsSection(bookings) {
+  const container = document.querySelector('[data-requests-list]');
+  if (!container) return;
+  
+  const pendingRequests = bookings.filter(b => b.status === 'Pending');
+  const declinedRequests = bookings.filter(b => ['Declined', 'Rejected'].includes(b.status));
+  const allRequests = [...pendingRequests, ...declinedRequests];
+  
+  if (!allRequests.length) {
+    container.innerHTML = `
+      <div class="text-center py-8 text-gray-500">
+        <i class="fas fa-paper-plane text-4xl mb-3 opacity-30"></i>
+        <p>No pending requests</p>
+        <a href="find-caregivers.html" class="mt-3 inline-block text-primary-600 hover:text-primary-800 font-medium">
+          Send a Request <i class="fas fa-arrow-right ml-1"></i>
+        </a>
+      </div>
+    `;
+    return;
+  }
+  
+  container.innerHTML = allRequests.map(booking => {
+    const statusClass = booking.status === 'Pending' 
+      ? 'bg-yellow-100 text-yellow-800' 
+      : 'bg-red-100 text-red-800';
+    
+    return `
+      <div class="flex items-center p-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all">
+        <div class="flex-shrink-0 w-12 h-12 ${booking.status === 'Pending' ? 'bg-yellow-100' : 'bg-red-100'} rounded-xl flex items-center justify-center mr-4">
+          <i class="fas ${booking.status === 'Pending' ? 'fa-clock' : 'fa-times-circle'} ${booking.status === 'Pending' ? 'text-yellow-600' : 'text-red-600'}"></i>
+        </div>
+        <div class="flex-1">
+          <h4 class="font-semibold text-gray-800">${booking.caregiverId?.cgName || 'Caregiver'}</h4>
+          <p class="text-gray-600 text-sm">${booking.elderName} - ${booking.careType || 'Care Service'}</p>
+          <div class="flex items-center mt-1">
+            <i class="fas fa-calendar text-gray-400 text-sm mr-2"></i>
+            <span class="text-gray-700 text-sm">${new Date(booking.startDate).toLocaleDateString()} - ${new Date(booking.endDate).toLocaleDateString()}</span>
+          </div>
+        </div>
+        <div class="text-right">
+          <span class="px-3 py-1 ${statusClass} rounded-full text-xs font-medium">
+            ${booking.status}
+          </span>
+          <p class="text-gray-500 text-xs mt-2">Sent ${getTimeAgo(booking.createdAt)}</p>
+        </div>
+      </div>
+    `;
+  }).join('');
+  
+  // Update the requests badge
+  const requestsBadge = document.querySelector('[data-badge="requests"]');
+  if (requestsBadge) {
+    requestsBadge.textContent = pendingRequests.length.toString();
+  }
+}
+
+// Helper function to get time ago
+function getTimeAgo(dateString) {
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffMs = now - date;
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMins / 60);
+  const diffDays = Math.floor(diffHours / 24);
+  
+  if (diffMins < 1) return 'just now';
+  if (diffMins < 60) return `${diffMins} min ago`;
+  if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+  if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+  return date.toLocaleDateString();
+}
+
+// Export for debugging
+window.loadUserBookings = loadUserBookings;

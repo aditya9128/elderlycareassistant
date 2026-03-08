@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mental Wellness Tips | ElderlyCare Assistant</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                        },
+                        mental: {
+                            50: '#faf5ff',
+                            100: '#f3e8ff',
+                            200: '#e9d5ff',
+                            300: '#d8b4fe',
+                            400: '#c084fc',
+                            500: '#a855f7',
+                            600: '#9333ea',
+                            700: '#7e22ce',
+                        }
+                    },
+                    fontFamily: {
+                        'poppins': ['Poppins', 'sans-serif'],
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                    animation: {
+                        'float': 'float 3s ease-in-out infinite',
+                        'fade-in-up': 'fadeInUp 0.6s ease-out forwards',
+                        'glow': 'glow 2s ease-in-out infinite',
+                        'breathe': 'breathe 4s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(30px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        glow: {
+                            '0%, 100%': { boxShadow: '0 0 20px rgba(168, 85, 247, 0.3)' },
+                            '50%': { boxShadow: '0 0 40px rgba(168, 85, 247, 0.6)' },
+                        },
+                        breathe: {
+                            '0%, 100%': { transform: 'scale(1)' },
+                            '50%': { transform: 'scale(1.05)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Poppins', sans-serif; }
+        .tip-card { opacity: 0; animation: fadeInUp 0.6s ease-out forwards; }
+        .tip-card:nth-child(1) { animation-delay: 0.1s; }
+        .tip-card:nth-child(2) { animation-delay: 0.2s; }
+        .tip-card:nth-child(3) { animation-delay: 0.3s; }
+        .tip-card:nth-child(4) { animation-delay: 0.4s; }
+        .tip-card:nth-child(5) { animation-delay: 0.5s; }
+        .tip-card:nth-child(6) { animation-delay: 0.6s; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-mental-50 via-white to-purple-100 min-h-screen">
+    <!-- Hero Section -->
+    <div class="relative overflow-hidden bg-gradient-to-r from-mental-500 via-mental-600 to-mental-700 text-white">
+        <!-- Background Pattern -->
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute top-10 left-10 text-9xl"><i class="fas fa-brain"></i></div>
+            <div class="absolute bottom-10 right-10 text-9xl"><i class="fas fa-peace"></i></div>
+            <div class="absolute top-1/2 left-1/3 text-6xl"><i class="fas fa-sun"></i></div>
+        </div>
+        
+        <div class="container mx-auto px-6 py-16 relative z-10">
+            <a href="dashboard.html" class="inline-flex items-center text-white/80 hover:text-white mb-8 transition-all">
+                <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard
+            </a>
+            
+            <div class="flex flex-col md:flex-row items-center justify-between">
+                <div class="md:w-1/2 mb-8 md:mb-0">
+                    <h1 class="text-4xl md:text-5xl font-bold mb-4">
+                        Mental Wellness Tips
+                    </h1>
+                    <p class="text-xl text-white/90 mb-6">
+                        Nurture your mind and emotional well-being for a happier, healthier life.
+                    </p>
+                    <div class="flex items-center space-x-4">
+                        <div class="bg-white/20 backdrop-blur-sm rounded-xl px-4 py-2">
+                            <i class="fas fa-clock mr-2"></i> 7 min read
+                        </div>
+                        <div class="bg-white/20 backdrop-blur-sm rounded-xl px-4 py-2">
+                            <i class="fas fa-heart mr-2"></i> Self-Care
+                        </div>
+                    </div>
+                </div>
+                <div class="md:w-1/3">
+                    <div class="w-48 h-48 mx-auto bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center animate-breathe animate-glow">
+                        <i class="fas fa-brain text-8xl text-white drop-shadow-lg"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Wave SVG -->
+        <svg class="absolute bottom-0 w-full" viewBox="0 0 1440 120" fill="none">
+            <path d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z" fill="white" fill-opacity="0.1"/>
+            <path d="M0,96L80,90.7C160,85,320,75,480,80C640,85,800,107,960,112C1120,117,1280,107,1360,101.3L1440,96L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z" fill="white"/>
+        </svg>
+    </div>
+    
+    <!-- Tips Content -->
+    <div class="container mx-auto px-6 py-12">
+        <!-- Wellness Goals -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+            <div class="bg-white rounded-2xl p-6 shadow-lg text-center hover:shadow-xl transition-all hover:-translate-y-1">
+                <div class="text-3xl font-bold text-mental-600">7-8</div>
+                <div class="text-gray-600 text-sm">Hours of Sleep</div>
+            </div>
+            <div class="bg-white rounded-2xl p-6 shadow-lg text-center hover:shadow-xl transition-all hover:-translate-y-1">
+                <div class="text-3xl font-bold text-mental-600">10</div>
+                <div class="text-gray-600 text-sm">Min Meditation</div>
+            </div>
+            <div class="bg-white rounded-2xl p-6 shadow-lg text-center hover:shadow-xl transition-all hover:-translate-y-1">
+                <div class="text-3xl font-bold text-mental-600">Daily</div>
+                <div class="text-gray-600 text-sm">Social Connection</div>
+            </div>
+            <div class="bg-white rounded-2xl p-6 shadow-lg text-center hover:shadow-xl transition-all hover:-translate-y-1">
+                <div class="text-3xl font-bold text-mental-600">3</div>
+                <div class="text-gray-600 text-sm">Gratitude Items</div>
+            </div>
+        </div>
+        
+        <!-- Tips Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Tip 1 -->
+            <div class="tip-card bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all hover:-translate-y-2">
+                <div class="h-3 bg-gradient-to-r from-mental-400 to-mental-600"></div>
+                <div class="p-6">
+                    <div class="w-14 h-14 bg-mental-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-users text-mental-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Stay Socially Connected</h3>
+                    <p class="text-gray-600 mb-4">
+                        Social isolation can lead to depression. Stay connected with family, friends, and community.
+                    </p>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li class="flex items-center"><i class="fas fa-check text-mental-500 mr-2"></i> Daily phone calls</li>
+                        <li class="flex items-center"><i class="fas fa-check text-mental-500 mr-2"></i> Join community groups</li>
+                        <li class="flex items-center"><i class="fas fa-check text-mental-500 mr-2"></i> Video chat with family</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Tip 2 -->
+            <div class="tip-card bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all hover:-translate-y-2">
+                <div class="h-3 bg-gradient-to-r from-mental-400 to-mental-600"></div>
+                <div class="p-6">
+                    <div class="w-14 h-14 bg-mental-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-om text-mental-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Practice Meditation</h3>
+                    <p class="text-gray-600 mb-4">
+                        Just 10 minutes of daily meditation can reduce stress, anxiety, and improve overall well-being.
+                    </p>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li class="flex items-center"><i class="fas fa-check text-mental-500 mr-2"></i> Deep breathing</li>
+                        <li class="flex items-center"><i class="fas fa-check text-mental-500 mr-2"></i> Guided meditation apps</li>
+                        <li class="flex items-center"><i class="fas fa-check text-mental-500 mr-2"></i> Mindful moments</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Tip 3 -->
+            <div class="tip-card bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all hover:-translate-y-2">
+                <div class="h-3 bg-gradient-to-r from-mental-400 to-mental-600"></div>
+                <div class="p-6">
+                    <div class="w-14 h-14 bg-mental-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-puzzle-piece text-mental-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Keep Your Mind Active</h3>
+                    <p class="text-gray-600 mb-4">
+                        Mental exercises help maintain cognitive function and may reduce dementia risk.
+                    </p>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li class="flex items-center"><i class="fas fa-check text-mental-500 mr-2"></i> Crossword puzzles</li>
+                        <li class="flex items-center"><i class="fas fa-check text-mental-500 mr-2"></i> Learn new skills</li>
+                        <li class="flex items-center"><i class="fas fa-check text-mental-500 mr-2"></i> Read daily</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Tip 4 -->
+            <div class="tip-card bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all hover:-translate-y-2">
+                <div class="h-3 bg-gradient-to-r from-mental-400 to-mental-600"></div>
+                <div class="p-6">
+                    <div class="w-14 h-14 bg-mental-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-pray text-mental-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Practice Gratitude</h3>
+                    <p class="text-gray-600 mb-4">
+                        Focusing on positive aspects of life can significantly improve mood and outlook.
+                    </p>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li class="flex items-center"><i class="fas fa-check text-mental-500 mr-2"></i> Keep a gratitude journal</li>
+                        <li class="flex items-center"><i class="fas fa-check text-mental-500 mr-2"></i> Share appreciation daily</li>
+                        <li class="flex items-center"><i class="fas fa-check text-mental-500 mr-2"></i> Reflect on positives</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Tip 5 -->
+            <div class="tip-card bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all hover:-translate-y-2">
+                <div class="h-3 bg-gradient-to-r from-mental-400 to-mental-600"></div>
+                <div class="p-6">
+                    <div class="w-14 h-14 bg-mental-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-moon text-mental-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Prioritize Sleep</h3>
+                    <p class="text-gray-600 mb-4">
+                        Quality sleep is essential for mental clarity, mood regulation, and overall brain health.
+                    </p>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li class="flex items-center"><i class="fas fa-check text-mental-500 mr-2"></i> Consistent bedtime</li>
+                        <li class="flex items-center"><i class="fas fa-check text-mental-500 mr-2"></i> Relaxing bedtime routine</li>
+                        <li class="flex items-center"><i class="fas fa-check text-mental-500 mr-2"></i> Limit screens before bed</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Tip 6 -->
+            <div class="tip-card bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all hover:-translate-y-2">
+                <div class="h-3 bg-gradient-to-r from-mental-400 to-mental-600"></div>
+                <div class="p-6">
+                    <div class="w-14 h-14 bg-mental-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-palette text-mental-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Engage in Hobbies</h3>
+                    <p class="text-gray-600 mb-4">
+                        Creative activities bring joy and purpose. Pursue activities that make you happy.
+                    </p>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li class="flex items-center"><i class="fas fa-check text-mental-500 mr-2"></i> Gardening</li>
+                        <li class="flex items-center"><i class="fas fa-check text-mental-500 mr-2"></i> Music & arts</li>
+                        <li class="flex items-center"><i class="fas fa-check text-mental-500 mr-2"></i> Cooking & baking</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Breathing Exercise Section -->
+        <div class="mt-12 bg-gradient-to-r from-mental-500 to-mental-700 rounded-2xl p-8 text-white">
+            <div class="flex items-center mb-6">
+                <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mr-4">
+                    <i class="fas fa-wind text-2xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold">Quick Calming Breath Exercise</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6">
+                    <div class="w-16 h-16 mx-auto bg-white/20 rounded-full flex items-center justify-center mb-3">
+                        <span class="text-3xl font-bold">1</span>
+                    </div>
+                    <p class="font-semibold">Breathe In</p>
+                    <p class="text-3xl font-bold mt-2">4 sec</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6">
+                    <div class="w-16 h-16 mx-auto bg-white/20 rounded-full flex items-center justify-center mb-3">
+                        <span class="text-3xl font-bold">2</span>
+                    </div>
+                    <p class="font-semibold">Hold</p>
+                    <p class="text-3xl font-bold mt-2">7 sec</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6">
+                    <div class="w-16 h-16 mx-auto bg-white/20 rounded-full flex items-center justify-center mb-3">
+                        <span class="text-3xl font-bold">3</span>
+                    </div>
+                    <p class="font-semibold">Breathe Out</p>
+                    <p class="text-3xl font-bold mt-2">8 sec</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6">
+                    <div class="w-16 h-16 mx-auto bg-white/20 rounded-full flex items-center justify-center mb-3">
+                        <span class="text-3xl font-bold">4</span>
+                    </div>
+                    <p class="font-semibold">Repeat</p>
+                    <p class="text-3xl font-bold mt-2">4x</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Support Resources -->
+        <div class="mt-12 bg-white rounded-2xl shadow-lg p-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                <i class="fas fa-hands-helping text-mental-500 mr-3"></i>
+                Need Support? You're Not Alone
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-mental-50 rounded-xl p-6 border border-mental-200">
+                    <div class="flex items-center mb-3">
+                        <i class="fas fa-phone-alt text-mental-600 text-xl mr-3"></i>
+                        <h3 class="font-bold text-gray-800">Mental Health Helpline</h3>
+                    </div>
+                    <p class="text-gray-600 mb-3">24/7 support for emotional distress and mental health concerns.</p>
+                    <a href="tel:18005990019" class="inline-flex items-center text-mental-600 font-bold hover:text-mental-700">
+                        <i class="fas fa-phone mr-2"></i> 1800-599-0019
+                    </a>
+                </div>
+                <div class="bg-mental-50 rounded-xl p-6 border border-mental-200">
+                    <div class="flex items-center mb-3">
+                        <i class="fas fa-comment-dots text-mental-600 text-xl mr-3"></i>
+                        <h3 class="font-bold text-gray-800">Talk to Your Caregiver</h3>
+                    </div>
+                    <p class="text-gray-600 mb-3">Your caregiver is here to help. Don't hesitate to share your feelings.</p>
+                    <a href="dashboard.html" class="inline-flex items-center text-mental-600 font-bold hover:text-mental-700">
+                        <i class="fas fa-arrow-right mr-2"></i> Go to Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Back to Dashboard -->
+        <div class="mt-12 text-center">
+            <a href="dashboard.html" class="inline-flex items-center px-8 py-4 bg-mental-600 text-white rounded-xl font-semibold hover:bg-mental-700 transition-all shadow-lg hover:shadow-xl">
+                <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-8 mt-12">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-gray-400">© 2026 ElderlyCare Assistant. If you're experiencing a mental health crisis, please seek immediate help.</p>
+        </div>
+    </footer>
+</body>
+</html>

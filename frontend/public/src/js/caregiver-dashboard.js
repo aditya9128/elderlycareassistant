@@ -571,48 +571,52 @@ function updateRequestsList() {
                         <i class="fas fa-user text-blue-600"></i>
                     </div>
                     <div>
-                        <h4 class="font-semibold text-gray-800">${request.patient?.UName || 'Patient'}</h4>
-                        <p class="text-gray-600 text-sm">${request.patient?.age ? request.patient.age + ' years' : ''}</p>
+                        <h4 class="font-semibold text-gray-800">${request.elderName || request.patient?.name || 'Patient'}</h4>
+                        <p class="text-gray-600 text-sm">${request.elderAge ? request.elderAge + ' years, ' + (request.elderGender || '') : ''}</p>
                     </div>
                 </div>
-                <span class="px-3 py-1 bg-yellow-100 text-yellow-800 text-xs font-medium rounded-full">
-                    Pending
+                <span class="px-3 py-1 ${request.urgency === 'Urgent' ? 'bg-red-100 text-red-800' : request.urgency === 'Emergency' ? 'bg-red-200 text-red-900' : 'bg-yellow-100 text-yellow-800'} text-xs font-medium rounded-full">
+                    ${request.urgency || 'Pending'}
                 </span>
             </div>
             
             <div class="grid grid-cols-2 gap-3 text-sm mb-4">
                 <div class="text-gray-600">
                     <i class="fas fa-calendar mr-2 text-gray-400"></i>
-                    ${new Date(request.startDate).toLocaleDateString()}
+                    ${new Date(request.startDate).toLocaleDateString()} - ${new Date(request.endDate).toLocaleDateString()}
                 </div>
                 <div class="text-gray-600">
                     <i class="fas fa-clock mr-2 text-gray-400"></i>
-                    ${request.duration || 'Not specified'}
+                    ${request.duration ? request.duration + ' days' : 'Duration TBD'}
                 </div>
                 <div class="text-gray-600">
                     <i class="fas fa-stethoscope mr-2 text-gray-400"></i>
-                    ${request.serviceType}
+                    ${request.careType || request.specialization || 'Care Service'}
                 </div>
                 <div class="text-gray-600">
-                    <i class="fas fa-rupee-sign mr-2 text-gray-400"></i>
-                    ₹${request.budget || 'Negotiable'}
+                    <i class="fas fa-map-marker-alt mr-2 text-gray-400"></i>
+                    ${request.location?.city || request.patient?.city || 'Location TBD'}
                 </div>
             </div>
             
-            ${request.notes ? `
+            <div class="mb-3 text-sm">
+                <p class="text-gray-500"><i class="fas fa-phone mr-2"></i>Contact: ${request.patient?.phone || 'Not provided'}</p>
+            </div>
+            
+            ${request.message ? `
                 <div class="mb-4 p-3 bg-gray-50 rounded-lg">
-                    <p class="text-gray-700 text-sm">${request.notes}</p>
+                    <p class="text-gray-700 text-sm"><i class="fas fa-comment-alt mr-2 text-gray-400"></i>${request.message}</p>
                 </div>
             ` : ''}
             
             <div class="flex space-x-3">
                 <button onclick="acceptRequestAction('${request._id}')" 
-                        class="flex-1 py-2.5 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors">
-                    Accept
+                        class="flex-1 py-2.5 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors flex items-center justify-center">
+                    <i class="fas fa-check mr-2"></i>Accept
                 </button>
                 <button onclick="declineRequestAction('${request._id}')" 
-                        class="flex-1 py-2.5 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors">
-                    Decline
+                        class="flex-1 py-2.5 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors flex items-center justify-center">
+                    <i class="fas fa-times mr-2"></i>Decline
                 </button>
             </div>
         </div>

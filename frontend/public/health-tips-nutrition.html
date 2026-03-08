@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nutrition Tips | ElderlyCare Assistant</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                        },
+                        nutrition: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            300: '#86efac',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                        }
+                    },
+                    fontFamily: {
+                        'poppins': ['Poppins', 'sans-serif'],
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                    animation: {
+                        'bounce-slow': 'bounce 2s infinite',
+                        'float': 'float 3s ease-in-out infinite',
+                        'fade-in-up': 'fadeInUp 0.6s ease-out forwards',
+                        'wiggle': 'wiggle 1s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(30px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        wiggle: {
+                            '0%, 100%': { transform: 'rotate(-3deg)' },
+                            '50%': { transform: 'rotate(3deg)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Poppins', sans-serif; }
+        .tip-card { opacity: 0; animation: fadeInUp 0.6s ease-out forwards; }
+        .tip-card:nth-child(1) { animation-delay: 0.1s; }
+        .tip-card:nth-child(2) { animation-delay: 0.2s; }
+        .tip-card:nth-child(3) { animation-delay: 0.3s; }
+        .tip-card:nth-child(4) { animation-delay: 0.4s; }
+        .tip-card:nth-child(5) { animation-delay: 0.5s; }
+        .tip-card:nth-child(6) { animation-delay: 0.6s; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-nutrition-50 via-white to-nutrition-100 min-h-screen">
+    <!-- Hero Section -->
+    <div class="relative overflow-hidden bg-gradient-to-r from-nutrition-500 via-nutrition-600 to-nutrition-700 text-white">
+        <!-- Background Pattern -->
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute top-10 left-10 text-9xl"><i class="fas fa-carrot"></i></div>
+            <div class="absolute bottom-10 right-10 text-9xl"><i class="fas fa-apple-alt"></i></div>
+            <div class="absolute top-1/2 left-1/3 text-6xl"><i class="fas fa-lemon"></i></div>
+        </div>
+        
+        <div class="container mx-auto px-6 py-16 relative z-10">
+            <a href="dashboard.html" class="inline-flex items-center text-white/80 hover:text-white mb-8 transition-all">
+                <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard
+            </a>
+            
+            <div class="flex flex-col md:flex-row items-center justify-between">
+                <div class="md:w-1/2 mb-8 md:mb-0">
+                    <h1 class="text-4xl md:text-5xl font-bold mb-4">
+                        Nutrition Tips
+                    </h1>
+                    <p class="text-xl text-white/90 mb-6">
+                        Nourish your body with the right foods for healthy aging and vitality.
+                    </p>
+                    <div class="flex items-center space-x-4">
+                        <div class="bg-white/20 backdrop-blur-sm rounded-xl px-4 py-2">
+                            <i class="fas fa-clock mr-2"></i> 6 min read
+                        </div>
+                        <div class="bg-white/20 backdrop-blur-sm rounded-xl px-4 py-2">
+                            <i class="fas fa-leaf mr-2"></i> Healthy Eating
+                        </div>
+                    </div>
+                </div>
+                <div class="md:w-1/3">
+                    <div class="w-48 h-48 mx-auto bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center animate-float">
+                        <i class="fas fa-seedling text-8xl text-white drop-shadow-lg"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Wave SVG -->
+        <svg class="absolute bottom-0 w-full" viewBox="0 0 1440 120" fill="none">
+            <path d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z" fill="white" fill-opacity="0.1"/>
+            <path d="M0,96L80,90.7C160,85,320,75,480,80C640,85,800,107,960,112C1120,117,1280,107,1360,101.3L1440,96L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z" fill="white"/>
+        </svg>
+    </div>
+    
+    <!-- Tips Content -->
+    <div class="container mx-auto px-6 py-12">
+        <!-- Daily Nutrition Goals -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+            <div class="bg-white rounded-2xl p-6 shadow-lg text-center hover:shadow-xl transition-all hover:-translate-y-1">
+                <div class="text-3xl font-bold text-nutrition-600">8+</div>
+                <div class="text-gray-600 text-sm">Glasses of Water</div>
+            </div>
+            <div class="bg-white rounded-2xl p-6 shadow-lg text-center hover:shadow-xl transition-all hover:-translate-y-1">
+                <div class="text-3xl font-bold text-nutrition-600">5</div>
+                <div class="text-gray-600 text-sm">Servings Fruits/Veg</div>
+            </div>
+            <div class="bg-white rounded-2xl p-6 shadow-lg text-center hover:shadow-xl transition-all hover:-translate-y-1">
+                <div class="text-3xl font-bold text-nutrition-600">25g</div>
+                <div class="text-gray-600 text-sm">Daily Fiber</div>
+            </div>
+            <div class="bg-white rounded-2xl p-6 shadow-lg text-center hover:shadow-xl transition-all hover:-translate-y-1">
+                <div class="text-3xl font-bold text-nutrition-600">&lt;6g</div>
+                <div class="text-gray-600 text-sm">Salt per Day</div>
+            </div>
+        </div>
+        
+        <!-- Tips Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Tip 1 -->
+            <div class="tip-card bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all hover:-translate-y-2">
+                <div class="h-3 bg-gradient-to-r from-nutrition-400 to-nutrition-600"></div>
+                <div class="p-6">
+                    <div class="w-14 h-14 bg-nutrition-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-tint text-nutrition-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Stay Hydrated</h3>
+                    <p class="text-gray-600 mb-4">
+                        Seniors often don't feel thirsty even when dehydrated. Keep water nearby and sip throughout the day.
+                    </p>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li class="flex items-center"><i class="fas fa-check text-nutrition-500 mr-2"></i> 8 glasses daily minimum</li>
+                        <li class="flex items-center"><i class="fas fa-check text-nutrition-500 mr-2"></i> Herbal teas count</li>
+                        <li class="flex items-center"><i class="fas fa-check text-nutrition-500 mr-2"></i> Eat water-rich fruits</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Tip 2 -->
+            <div class="tip-card bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all hover:-translate-y-2">
+                <div class="h-3 bg-gradient-to-r from-nutrition-400 to-nutrition-600"></div>
+                <div class="p-6">
+                    <div class="w-14 h-14 bg-nutrition-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-fish text-nutrition-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Protein Power</h3>
+                    <p class="text-gray-600 mb-4">
+                        Adequate protein helps maintain muscle mass and strength as we age. Include protein in every meal.
+                    </p>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li class="flex items-center"><i class="fas fa-check text-nutrition-500 mr-2"></i> Fish & lean meats</li>
+                        <li class="flex items-center"><i class="fas fa-check text-nutrition-500 mr-2"></i> Eggs & dairy</li>
+                        <li class="flex items-center"><i class="fas fa-check text-nutrition-500 mr-2"></i> Beans & lentils</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Tip 3 -->
+            <div class="tip-card bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all hover:-translate-y-2">
+                <div class="h-3 bg-gradient-to-r from-nutrition-400 to-nutrition-600"></div>
+                <div class="p-6">
+                    <div class="w-14 h-14 bg-nutrition-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-bone text-nutrition-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Calcium & Vitamin D</h3>
+                    <p class="text-gray-600 mb-4">
+                        Strong bones need calcium and vitamin D. Essential for preventing osteoporosis and fractures.
+                    </p>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li class="flex items-center"><i class="fas fa-check text-nutrition-500 mr-2"></i> Dairy products</li>
+                        <li class="flex items-center"><i class="fas fa-check text-nutrition-500 mr-2"></i> Fortified cereals</li>
+                        <li class="flex items-center"><i class="fas fa-check text-nutrition-500 mr-2"></i> 15 min sunlight daily</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Tip 4 -->
+            <div class="tip-card bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all hover:-translate-y-2">
+                <div class="h-3 bg-gradient-to-r from-nutrition-400 to-nutrition-600"></div>
+                <div class="p-6">
+                    <div class="w-14 h-14 bg-nutrition-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-bread-slice text-nutrition-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Fiber-Rich Foods</h3>
+                    <p class="text-gray-600 mb-4">
+                        Fiber aids digestion, helps control blood sugar, and keeps you feeling full longer.
+                    </p>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li class="flex items-center"><i class="fas fa-check text-nutrition-500 mr-2"></i> Whole grains</li>
+                        <li class="flex items-center"><i class="fas fa-check text-nutrition-500 mr-2"></i> Fresh vegetables</li>
+                        <li class="flex items-center"><i class="fas fa-check text-nutrition-500 mr-2"></i> Oats & bran</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Tip 5 -->
+            <div class="tip-card bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all hover:-translate-y-2">
+                <div class="h-3 bg-gradient-to-r from-nutrition-400 to-nutrition-600"></div>
+                <div class="p-6">
+                    <div class="w-14 h-14 bg-nutrition-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-cookie-bite text-nutrition-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Limit Sugar & Salt</h3>
+                    <p class="text-gray-600 mb-4">
+                        Reduce processed foods high in sugar and sodium to protect your heart and manage blood pressure.
+                    </p>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li class="flex items-center"><i class="fas fa-check text-nutrition-500 mr-2"></i> Read food labels</li>
+                        <li class="flex items-center"><i class="fas fa-check text-nutrition-500 mr-2"></i> Cook at home</li>
+                        <li class="flex items-center"><i class="fas fa-check text-nutrition-500 mr-2"></i> Use herbs for flavor</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Tip 6 -->
+            <div class="tip-card bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all hover:-translate-y-2">
+                <div class="h-3 bg-gradient-to-r from-nutrition-400 to-nutrition-600"></div>
+                <div class="p-6">
+                    <div class="w-14 h-14 bg-nutrition-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-utensils text-nutrition-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Small, Frequent Meals</h3>
+                    <p class="text-gray-600 mb-4">
+                        Eating smaller portions more often helps with digestion and maintains steady energy levels.
+                    </p>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li class="flex items-center"><i class="fas fa-check text-nutrition-500 mr-2"></i> 5-6 small meals daily</li>
+                        <li class="flex items-center"><i class="fas fa-check text-nutrition-500 mr-2"></i> Healthy snacks</li>
+                        <li class="flex items-center"><i class="fas fa-check text-nutrition-500 mr-2"></i> Don't skip meals</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Superfoods Section -->
+        <div class="mt-12 bg-gradient-to-r from-nutrition-500 to-nutrition-700 rounded-2xl p-8 text-white">
+            <div class="flex items-center mb-6">
+                <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mr-4">
+                    <i class="fas fa-star text-2xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold">Superfoods for Seniors</h2>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 text-center hover:bg-white/20 transition-all">
+                    <i class="fas fa-fish text-3xl mb-2"></i>
+                    <p class="font-semibold">Salmon</p>
+                    <p class="text-sm text-white/70">Omega-3</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 text-center hover:bg-white/20 transition-all">
+                    <i class="fas fa-leaf text-3xl mb-2"></i>
+                    <p class="font-semibold">Spinach</p>
+                    <p class="text-sm text-white/70">Iron & Vitamins</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 text-center hover:bg-white/20 transition-all">
+                    <i class="fas fa-circle text-3xl mb-2 text-blue-300"></i>
+                    <p class="font-semibold">Blueberries</p>
+                    <p class="text-sm text-white/70">Antioxidants</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 text-center hover:bg-white/20 transition-all">
+                    <i class="fas fa-egg text-3xl mb-2"></i>
+                    <p class="font-semibold">Eggs</p>
+                    <p class="text-sm text-white/70">Protein & B12</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 text-center hover:bg-white/20 transition-all">
+                    <i class="fas fa-seedling text-3xl mb-2"></i>
+                    <p class="font-semibold">Nuts</p>
+                    <p class="text-sm text-white/70">Healthy Fats</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 text-center hover:bg-white/20 transition-all">
+                    <i class="fas fa-cheese text-3xl mb-2"></i>
+                    <p class="font-semibold">Greek Yogurt</p>
+                    <p class="text-sm text-white/70">Probiotics</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Back to Dashboard -->
+        <div class="mt-12 text-center">
+            <a href="dashboard.html" class="inline-flex items-center px-8 py-4 bg-nutrition-600 text-white rounded-xl font-semibold hover:bg-nutrition-700 transition-all shadow-lg hover:shadow-xl">
+                <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-8 mt-12">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-gray-400">© 2026 ElderlyCare Assistant. Always consult your healthcare provider for dietary advice.</p>
+        </div>
+    </footer>
+</body>
+</html>
