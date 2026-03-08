@@ -5,8 +5,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const searchBtn = document.getElementById('caregiverSearchBtn');
     const caregiverResults = document.getElementById('caregiverResults');
     
-    // API Configuration
-    const API_BASE_URL = 'http://localhost:5000/api'; // Update with your backend URL
+    // API Configuration - Dynamic based on environment
+    const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+        ? 'http://localhost:5000/api'
+        : 'https://elderlycare-backend-f853.onrender.com/api';
     const CAREGIVERS_ENDPOINT = `${API_BASE_URL}/caregivers`;
     const SEARCH_ENDPOINT = `${API_BASE_URL}/caregivers/search`;
     const TOP_RATED_ENDPOINT = `${API_BASE_URL}/caregivers/top-rated`;

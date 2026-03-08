@@ -1,7 +1,9 @@
 // hospitalSearch.js - Hospital search functionality for index.html
 
-// API Configuration
-const API_BASE_URL = 'http://localhost:5000/api';
+// API Configuration - Dynamic based on environment
+const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/api'
+    : 'https://elderlycare-backend-f853.onrender.com/api';
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🏥 Hospital search initializing...');
