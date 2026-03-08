@@ -63,8 +63,8 @@ document.addEventListener('DOMContentLoaded', function() {
             setupSearchSuggestions();
         }
         
-        // Load top-rated caregivers initially
-        loadTopRatedCaregivers();
+        // Don't auto-load caregivers - only show after user searches
+        // loadTopRatedCaregivers();
     }
     
     function setupSearchSuggestions() {
